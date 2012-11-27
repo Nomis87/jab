@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:clickable="false"
+    android:orientation="vertical"
+    android:scrollbarAlwaysDrawVerticalTrack="false" >
+
+    <TextView
+        android:id="@+id/textViewHeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="Willkommen bei Poke"
+        android:textColor="#FFFFFF"
+        android:textSize="25dp" />
+
+    <LinearLayout
+        android:id="@+id/konfigLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:background="#181818"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textViewKonfig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Konfiguration"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
+
+        <LinearLayout
+            android:id="@+id/lineLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="2dp"
+            android:background="#FFFFFF" >
+        </LinearLayout>
+        
+		<!-- Hier ist der Abschitt zum Auswählen des Landes-->
+		<TextView
+            android:id="@+id/textViewNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Wählen sie ihr Land aus"
+            android:textColor="#FFFFFF"
+            android:textSize="10dp" />
+		
+		<Spinner
+		    android:id="@+id/countrySpinner"
+		    android:layout_width="200dp"
+		    android:layout_height="30dp"
+		    android:layout_gravity="center"
+		    android:layout_marginTop="2dp"
+		    android:background="#FFFFFF"
+		    android:drawSelectorOnTop = "true"/>
+
+        <!-- Hier ist der Abschnitt für die Eingabe der Telefonnummer -->
+
+		<TextView
+            android:id="@+id/textViewNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Telefonnummer"
+            android:textColor="#FFFFFF"
+            android:textSize="10dp" />
+
+
+		<EditText
+            android:id="@+id/telnummberEditText"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="phone"
+            android:background="#FFFFFF">
+            <requestFocus/>
+        </EditText>
+        	
+        
+		<!-- Hier ist der Abschnitt für die Eingabe des Username -->
+
+		<TextView
+            android:id="@+id/textViewUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Username"
+            android:textColor="#FFFFFF"
+            android:textSize="10dp" />
+
+
+		<EditText
+            android:id="@+id/usernameEditText"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="text" 
+        	android:background="#FFFFFF">
+            <requestFocus/>
+        </EditText> 
+        
+		<!-- Hier ist der Abschnitt für die Eingabe des Passworts -->
+
+		<TextView
+            android:id="@+id/textViewPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Passwort"
+            android:textColor="#FFFFFF"
+            android:textSize="10dp" />
+
+
+		<EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:inputType="textPassword" 
+            android:background="#FFFFFF">
+            <requestFocus/>
+        </EditText> 
+		
+		<!-- Dies ist der Agb Akzeptieren Button-->
+		
+        <Button
+            android:id="@+id/AgbConfirmButton"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:textSize="12dp"
+            android:layout_marginTop="30dp"
+            android:text="Akzeptieren" />
+    </LinearLayout>
+
+</LinearLayout>

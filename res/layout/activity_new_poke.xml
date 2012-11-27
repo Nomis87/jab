@@ -1,0 +1,146 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@drawable/main_background">
+	
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#1491CB">   
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="2dp"
+        android:background="#FFFFFF"
+        android:orientation="vertical"> 
+        
+        <LinearLayout 
+            android:layout_width="wrap_content"
+    		android:layout_height="match_parent"
+    		android:layout_gravity="center">
+    		
+            <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:textColor="#1491CB"
+            android:textSize="30dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="6dp"
+            android:textStyle="bold"
+            android:text="Create a new Poke "/>
+
+        </LinearLayout> 	
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="52dp"
+        android:background="#1491CB">   
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:orientation="vertical">
+              
+        <LinearLayout
+        	android:id="@+id/konfigLayout"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_gravity="center"
+        	android:layout_marginTop="25dp"
+        	android:orientation="vertical">
+        
+			<!-- Hier ist der Abschitt zum Auswählen des Landes-->
+			<TextView
+            	android:id="@+id/textViewReceiver"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_marginTop="20dp"  	
+		    	android:layout_gravity="center"
+            	android:text="Empfänger:"
+            	android:textColor="#FFFFFF"
+            	android:textSize="20dp" />
+		
+			<Spinner
+		    	android:id="@+id/receiverSpinner"
+		    	android:layout_width="200dp"
+		    	android:layout_height="30dp"
+		    	android:layout_gravity="center"
+		    	android:layout_marginTop="2dp"
+		    	android:background="#FFFFFF"
+		    	android:popupBackground="#161616"
+		    	android:drawSelectorOnTop = "true"/>
+
+        	<!-- Hier ist der Abschnitt für die Eingabe der Telefonnummer -->
+
+			<TextView
+            	android:id="@+id/textViewNumber"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_gravity="center"
+            	android:layout_marginTop="10dp"
+            	android:text="Wähle einen Sound"
+            	android:textColor="#FFFFFF"
+            	android:textSize="20dp" />
+
+
+			<Spinner
+		    	android:id="@+id/soundSpinner"
+		    	android:layout_width="200dp"
+		    	android:layout_height="30dp"
+		    	android:layout_gravity="center"
+		    	android:layout_marginTop="2dp"
+		    	android:background="#FFFFFF"
+		    	android:drawSelectorOnTop = "true"/>
+        	
+        
+			<!-- Hier ist der Abschnitt für die Eingabe des Username -->
+
+			<TextView
+            	android:id="@+id/textViewText"
+            	android:layout_width="wrap_content"
+            	android:layout_height="wrap_content"
+            	android:layout_gravity="center"
+            	android:layout_marginTop="10dp"
+            	android:text="Poke Nachricht:"
+            	android:textColor="#FFFFFF"
+            	android:textSize="20dp" />
+
+
+			<EditText
+            	android:id="@+id/pokeMessageEditText"
+            	android:layout_width="200dp"
+            	android:layout_height="100dp"
+            	android:maxLength="111"
+            	android:layout_gravity="center"
+            	android:ems="10"
+            	android:paddingLeft="5dp"
+            	android:paddingRight="5dp"
+            	android:textColor="#000000"
+            	android:gravity="top|left"
+            	android:inputType="textMultiLine"
+        		android:background="#FFFFFF">
+            	<requestFocus/>
+        	</EditText> 
+       
+			<!-- Dies ist der Agb Akzeptieren Button-->
+		
+        	<Button
+            	android:id="@+id/sendButton"
+            	android:layout_width="100dp"
+            	android:layout_height="35dp"
+            	android:layout_gravity="center"
+            	android:textSize="12dp"
+            	android:layout_marginTop="30dp"
+            	android:text="Senden" />
+    	
+    	</LinearLayout>
+    </LinearLayout>
+    
+    </RelativeLayout>
