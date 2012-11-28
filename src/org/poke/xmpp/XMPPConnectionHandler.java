@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.provider.XHTMLExtensionProvider;
 import org.jivesoftware.smackx.search.UserSearch;
 import org.jivesoftware.smackx.search.UserSearchManager;
 import org.poke.helper.HelperFunctions;
+import org.poke.message.PokeMessageListener;
 import org.poke.util.ApplicationConstants;
 
 import android.content.Context;
@@ -94,8 +95,9 @@ public class XMPPConnectionHandler {
 	
 	public void pokeMessageReceiver(){
 		
-		PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-		connection.addPacketListener( new PokeMessageReceiver(), filter);
+		Log.d(TAG, "Message Receiver wird aufgerufen");
+		PacketFilter filter = new MessageTypeFilter(Message.Type.normal);
+		connection.addPacketListener( new PokeMessageListener(), filter);
 	}
 	
 	public XMPPConnection getConnection(){
