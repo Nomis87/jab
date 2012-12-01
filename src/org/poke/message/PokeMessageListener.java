@@ -24,15 +24,18 @@ public class PokeMessageListener implements PacketListener {
 			
 			Message message = (Message) packet;
 			
-			Intent service = new Intent(context,PokeMessageService.class);
-			service.putExtra("pokeSender", message.getFrom());
-			service.putExtra("pokeMessage", message.getBody());
-			
-			context.startService(service);
-			
-			Log.d(TAG, "From: ["+message.getFrom()+"] Message: ["+message.getBody()+"]");
+			if(message.getFrom() != null){
+				
+				Intent service = new Intent(context,PokeMessageService.class);
+				service.putExtra("pokeSender", message.getFrom());
+				service.putExtra("pokeMessage", message.getBody());
+				context.startService(service);
+					
+				Log.d(TAG, "From: ["+message.getFrom()+"] Message: ["+message.getBody()+"]");
+				
+			}
 		}
-
+		
 	}
 
 }

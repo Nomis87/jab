@@ -122,7 +122,7 @@ public class IndexActivity extends Activity {
     	serviceStateToggleButton.setOnClickListener(new OnClickListener() {
 			
     		Intent pokeMessageService = new Intent(getApplicationContext(), PokeMessageService.class);
-    		
+    
 			public void onClick(View v) {
 				
 				
@@ -135,16 +135,14 @@ public class IndexActivity extends Activity {
 					myPokesButton.setVisibility(View.GONE);
 		    		newPokeButton.setVisibility(View.GONE);
 		    		contactListButton.setVisibility(View.GONE);
-		    		
-		    		stopService(pokeMessageService);
+	
 				}
 				else{
 					
 					myPokesButton.setVisibility(View.VISIBLE);
 		    		newPokeButton.setVisibility(View.VISIBLE);
 		    		contactListButton.setVisibility(View.VISIBLE);
-		    		
-		    		startService(pokeMessageService);
+
 				}
 				
 			}
@@ -152,9 +150,5 @@ public class IndexActivity extends Activity {
     	
     }
     
-    //TODO Sound von Pokes ausschalten
-    private void soundStateToggleButtonListener(){
-    	
-    }
     
 }

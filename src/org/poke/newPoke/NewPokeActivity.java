@@ -8,6 +8,8 @@ import org.poke.main.R.layout;
 import org.poke.main.R.menu;
 import org.poke.object.RosterContact;
 import org.poke.util.ApplicationConstants;
+import org.poke.xmpp.RosterStorage;
+import org.poke.xmpp.XMPPConnectionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -27,7 +29,11 @@ import android.widget.Spinner;
 
 public class NewPokeActivity extends Activity {
 	
+	private final String TAG = "NewPokeActivity";
+	
 	private Context context;
+	
+	private ArrayList<RosterContact> rosterContactList;
 	
 	private Spinner receiverSpinner;
 	private Spinner soundSpinner;	
@@ -35,8 +41,7 @@ public class NewPokeActivity extends Activity {
 	private Button sendButton;
 	
 	private RosterContact receiver = null;
-	
-	private ArrayList<RosterContact> rosterContactList;
+	private String sound;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,29 +78,14 @@ public class NewPokeActivity extends Activity {
     
     private void addItemsToReceiverSpinner(){
     	
-    	rosterContactList = new ArrayList<RosterContact>();
-    	
-    	SQLiteDatabase db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-    	
-    	Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_ROSTER, null);
-    	c.moveToFirst();
-    	do{
-    		
-    		RosterContact rc = new RosterContact();
-    		rc.setJid(c.getString(c.getColumnIndex("ro_id")));
-    		rc.setUsername(c.getString(c.getColumnIndex("ro_username")));
-    		rosterContactList.add(rc);
-    		
-    	}
-    	while(c.moveToNext());
-    	
-    	c.close();
-    	db.close();
-    	
+//    	getContactsFromDatabase();
+    	getContactsFromServer();
+    	  	
     	List<String> nameList = new ArrayList<String>();
     	
     	for(RosterContact rs : rosterContactList){
     		
+    		Log.d(TAG, "Username: "+rs.getUsername()+" , Jid: "+rs.getJid());
     		nameList.add(rs.getUsername());
     	}
     	
@@ -135,9 +125,36 @@ public class NewPokeActivity extends Activity {
     
     private void addItemsToSoundSpinner(){
     	
+    	List<String> soundList = new ArrayList<String>();
+    	soundList.add("TOR");
+    	
+    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.receiver_spinner_layout, soundList);
+    	
+    	adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    	
+    	soundSpinner.setAdapter(adapter);
+    	
     }
     
     private void soundSpinnerListener(){
+    	
+    	soundSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View arg1,
+					int pos, long arg3) {
+				
+				if(parent.getItemAtPosition(pos).equals("TOR")){
+					
+					sound = "ps:tor";
+				}
+				
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
     	
     }
     
@@ -149,12 +166,46 @@ public class NewPokeActivity extends Activity {
 				
 				if(receiver!=null){
 					
-					SendPokeTask poke = new SendPokeTask(receiver, "test", pokeMessage.getText().toString());
+					SendPokeTask poke = new SendPokeTask(receiver, sound, pokeMessage.getText().toString());
 					poke.execute();
-					
+					NewPokeActivity.this.finish();
 				}
 				
 			}
 		});
     }
+    
+    private void getContactsFromDatabase(){
+    	
+    	rosterContactList = new ArrayList<RosterContact>();
+    	
+    	SQLiteDatabase db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+    	
+    	Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_ROSTER, null);
+    	c.moveToFirst();
+    	if(c.getCount() > 0){
+	    	do{
+	    		
+	    		RosterContact rc = new RosterContact();
+	    		rc.setJid(c.getString(c.getColumnIndex("ro_id")));
+	    		rc.setUsername(c.getString(c.getColumnIndex("ro_username")));
+	    		rosterContactList.add(rc);
+	    		
+	    	}
+	    	while(c.moveToNext());
+    	}
+    	c.close();
+    	db.close();
+    	
+    }
+    
+    //Eine Methode welche nur zum Debuggen verwendet wird
+    private void getContactsFromServer(){
+    	
+    	RosterStorage rs = new RosterStorage();
+    	
+    	rosterContactList = rs.getEntries(XMPPConnectionHandler.getInstance().getConnection());
+    	
+    }
+    
 }

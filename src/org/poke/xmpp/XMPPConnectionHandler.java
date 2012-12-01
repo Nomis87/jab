@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.jivesoftware.smack.AccountManager;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -55,6 +57,12 @@ public class XMPPConnectionHandler {
 	
 	private static XMPPConnectionHandler instance = null;
 	
+	
+	public XMPPConnection getConnection(){
+		
+		return this.connection;
+	}
+	
 	public XMPPConnectionHandler(){
 		
 		init_config();
@@ -98,11 +106,6 @@ public class XMPPConnectionHandler {
 		Log.d(TAG, "Message Receiver wird aufgerufen");
 		PacketFilter filter = new MessageTypeFilter(Message.Type.normal);
 		connection.addPacketListener( new PokeMessageListener(), filter);
-	}
-	
-	public XMPPConnection getConnection(){
-		
-		return this.connection;
 	}
 	
 	public void createAccount(String userId, String username, String password ) throws XMPPException{
@@ -171,9 +174,20 @@ public class XMPPConnectionHandler {
 		 Log.i("XMPPClient", "Sending text [so_" + sound + " "+pokeMessage+"] to [" + receiver + "]");
 		 if(connection.isAuthenticated()){
 			 
-			 Message message = new Message(receiver, Message.Type.chat);
-			 message.setBody(sound+" : "+pokeMessage);
+			 Message message = new Message(receiver, Message.Type.normal);
+			 message.setBody(sound+ApplicationConstants.SEPERATOR+pokeMessage);
 			 connection.sendPacket(message);
+			 
+			 ChatManager chatManager = connection.getChatManager();
+			 Chat chat = chatManager.createChat(receiver,null);
+			 
+			 try {
+				chat.sendMessage(message);
+			 } catch (XMPPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			 }
+			
 			 
 		 }
 		 else{

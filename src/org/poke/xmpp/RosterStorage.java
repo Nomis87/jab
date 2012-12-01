@@ -1,5 +1,6 @@
 package org.poke.xmpp;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -7,6 +8,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.packet.Presence;
+import org.poke.object.RosterContact;
 
 public class RosterStorage {
 	
@@ -58,17 +60,29 @@ public class RosterStorage {
 		
 	}
 
-	public Collection<RosterEntry> getEntries(XMPPConnection connection) {
+	public ArrayList<RosterContact> getEntries(XMPPConnection connection) {
 		
 		Collection<RosterEntry> list =null;
+		ArrayList<RosterContact> rcList = new ArrayList<RosterContact>();
 		
 		if((connection!=null)&&(connection.isAuthenticated())){
 			
-			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
+			connection.getRoster().setSubscriptionMode(SubscriptionMode.accept_all);
 			list = connection.getRoster().getEntries();
+			
 		}
 		
-		return list;
+		for(RosterEntry re : list){
+			
+			RosterContact rc = new RosterContact();
+			
+			rc.setJid(re.getUser());
+			rc.setUsername(re.getName());
+			
+			rcList.add(rc);
+		}
+		
+		return rcList;
 	}
 
 	public RosterEntry getEntry(String userId, XMPPConnection connection) {
