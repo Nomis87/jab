@@ -26,13 +26,24 @@ public final class R {
         public static final int buttonMyPokes=0x7f090000;
         public static final int buttonNewPoke=0x7f090001;
         public static final int countrySpinner=0x7f09000f;
+        public static final int dialofTopTimeLayout=0x7f090018;
+        public static final int dialogButtomLayout=0x7f09001f;
+        public static final int dialogMiddleLayout=0x7f09001d;
+        public static final int dialogOkButton=0x7f090020;
+        public static final int dialogTopInfoLayout=0x7f090017;
+        public static final int dialogTopLayout=0x7f090016;
+        public static final int dialogTopTimeLayout=0x7f09001b;
         public static final int konfigLayout=0x7f090004;
         public static final int lineLayout=0x7f09000e;
-        public static final int menu_settings=0x7f090017;
+        public static final int menu_settings=0x7f090022;
         public static final int passwordEditText=0x7f090014;
         public static final int pokeMessageEditText=0x7f09000a;
+        public static final int pokeMessageTextView=0x7f09001e;
+        public static final int receiveDateTextView=0x7f090019;
+        public static final int receiveTimeTextView=0x7f09001a;
+        public static final int receiveUserTextView=0x7f09001c;
         public static final int receiverSpinner=0x7f090006;
-        public static final int receiverSpinnerText=0x7f090016;
+        public static final int receiverSpinnerText=0x7f090021;
         public static final int sendButton=0x7f09000b;
         public static final int soundSpinner=0x7f090008;
         public static final int telnummberEditText=0x7f090010;
@@ -51,7 +62,8 @@ public final class R {
         public static final int activity_new_poke=0x7f030001;
         public static final int activity_setup=0x7f030002;
         public static final int activity_setup_error=0x7f030003;
-        public static final int receiver_spinner_layout=0x7f030004;
+        public static final int poke_dialog=0x7f030004;
+        public static final int receiver_spinner_layout=0x7f030005;
     }
     public static final class menu {
         public static final int activity_bootstrap=0x7f080000;

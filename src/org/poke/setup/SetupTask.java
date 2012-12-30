@@ -24,6 +24,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+/**
+ * Task for first Setup
+ * @author Tobias
+ *
+ */
 public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	
 	private Context context;
@@ -184,7 +189,7 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 		
 		SQLiteDatabase db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
 		
-		// Erstellen der Datenbank Taelle für den User
+		// Erstellen der Datenbank Tabelle für den User
 		db.execSQL("CREATE TABLE IF NOT EXISTS " 
 					+ ApplicationConstants.DB_TABLE_ROSTER
 					+ " (ro_id VARCHAR PRIMARY KEY, ro_username VARCHAR);");
@@ -206,12 +211,15 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 						
 			for(HandyContact user : contacts){
 				
+				
 				if(connectionHandler.isRegistered(countryCode+"_"+user.getNumber())){
 					
 					String userJid = countryCode+"_"+user.getNumber()+"@"+connectionHandler.getConnection().getServiceName();
 					
 					//Eintrag in den Roster einfügen
 					rs.addEntry(userJid, user.getName(),connectionHandler.getConnection());
+					
+					Log.d(TAG, userJid);
 					
 					//Roster auf die Datenbank abbilden
 					ContentValues userValues = new ContentValues();
@@ -227,6 +235,8 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 		
 		db.close();
 		connectionHandler.disconect();
+		
+		
 		return checked;
 	}
 	

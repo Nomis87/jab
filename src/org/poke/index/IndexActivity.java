@@ -29,6 +29,8 @@ public class IndexActivity extends Activity {
 	private Button contactListButton;
 	private ToggleButton serviceStateToggleButton;
 //	private ToggleButton soundStateToggleButton;
+
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,6 +130,7 @@ public class IndexActivity extends Activity {
 				
 				PokeStateTask pst = new PokeStateTask(context, 
 						XMPPConnectionHandler.getInstance().getConnection().isAuthenticated());
+				
 				pst.execute();
 				
 				if(XMPPConnectionHandler.getInstance().getConnection().isAuthenticated()){

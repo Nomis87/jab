@@ -50,4 +50,6 @@ public class BootstrapActivity extends Activity {
 		startActivity(intent);
 		finish();
 	}
+	
+	
 }

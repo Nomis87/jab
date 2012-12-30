@@ -76,10 +76,15 @@ public class NewPokeActivity extends Activity {
     	
     }
     
+    /**
+     * Methode welche die 
+     */
     private void addItemsToReceiverSpinner(){
     	
-//    	getContactsFromDatabase();
-    	getContactsFromServer();
+    	getContactsFromDatabase();
+    	
+    	//Dewbug Methode hier werden die User Online vom Roster gezogen
+//    	getContactsFromServer();
     	  	
     	List<String> nameList = new ArrayList<String>();
     	

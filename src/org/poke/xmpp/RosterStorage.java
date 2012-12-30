@@ -85,14 +85,18 @@ public class RosterStorage {
 		return rcList;
 	}
 
-	public RosterEntry getEntry(String userId, XMPPConnection connection) {
+	public RosterContact getEntry(String userId, XMPPConnection connection) {
 		
-		RosterEntry entry = null;
+		ArrayList<RosterContact> contacList = getEntries(connection);
+		RosterContact entry = null;
 		
-		if((connection!=null)&&(connection.isAuthenticated())){
+		
+		for(RosterContact contact : contacList ){
 			
-			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
-			entry = connection.getRoster().getEntry(userId);
+			if(contact.getJid().equals(userId)){
+				
+				entry = contact;
+			}
 		}
 		
 		return entry;
@@ -110,21 +114,23 @@ public class RosterStorage {
 		
 		return count;
 	}
-
+	
+	
+	//TODO Muss noch implementiert werden
 	public void removeEntry(String userId, XMPPConnection connection) {
 		
-		RosterEntry entry = getEntry(userId, connection);
-		
-		if((connection!=null)&&(connection.isAuthenticated())){
-			
-			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
-			try {
-				connection.getRoster().removeEntry(entry);
-			} catch (XMPPException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		RosterEntry entry = getEntry(userId, connection);
+//		
+//		if((connection!=null)&&(connection.isAuthenticated())){
+//			
+//			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
+//			try {
+//				connection.getRoster().removeEntry(entry);
+//			} catch (XMPPException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 	}
 
