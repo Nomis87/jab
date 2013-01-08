@@ -13,6 +13,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.Form;
@@ -199,6 +200,16 @@ public class XMPPConnectionHandler {
 		
 		
 		return false;
+	}
+	
+	public void sendAddedPackage(String receiver){
+		
+		if(connection.isAuthenticated()){
+			
+			Message message = new Message(receiver, Message.Type.error);
+			
+		}
+		
 	}
 	
 	public void login(String userId, String password) throws XMPPException{

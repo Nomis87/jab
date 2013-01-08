@@ -1,9 +1,13 @@
 package org.poke.message;
 
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
+import org.poke.database.DbUserRepository;
 import org.poke.util.ApplicationContext;
+import org.poke.xmpp.RosterStorage;
+import org.poke.xmpp.XMPPConnectionHandler;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,15 +28,36 @@ public class PokeMessageListener implements PacketListener {
 			
 			Message message = (Message) packet;
 			
-			if(message.getFrom() != null){
+			if(message.getType() == Message.Type.normal){
 				
-				Intent service = new Intent(context,PokeMessageService.class);
-				service.putExtra("pokeSender", message.getFrom());
-				service.putExtra("pokeMessage", message.getBody());
-				context.startService(service);
+				if(message.getFrom() != null){
+				
+					Intent service = new Intent(context,PokeMessageService.class);
+					service.putExtra("pokeSender", message.getFrom());
+					service.putExtra("pokeMessage", message.getBody());
+					context.startService(service);
 					
-				Log.d(TAG, "From: ["+message.getFrom()+"] Message: ["+message.getBody()+"]");
+					Log.d(TAG, "From: ["+message.getFrom()+"] Message: ["+message.getBody()+"]");
 				
+				}
+			}
+			
+			if(message.getType() == Message.Type.error){
+				
+				XMPPConnectionHandler handler = XMPPConnectionHandler.getInstance();
+				DbUserRepository userRepository = new DbUserRepository(context);
+				
+				RosterStorage rs = new RosterStorage();
+				try {
+					handler.login(userRepository.read().getUserId(), userRepository.read().getPassword());
+				} catch (XMPPException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//Hier muss noch der Nickname geprüft werden	
+				//rs.addEntry(message.getFrom(), nickname, connection)
+
 			}
 		}
 		

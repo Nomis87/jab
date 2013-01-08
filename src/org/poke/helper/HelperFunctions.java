@@ -1,16 +1,17 @@
 package org.poke.helper;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.poke.database.DbContactsRepository;
 import org.poke.object.HandyContact;
 import org.poke.util.ApplicationConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.RawContacts;
+import android.util.Log;
 
 /**
  * Singelton Class<br/>
@@ -89,31 +90,51 @@ public class HelperFunctions {
 		
 		 // Run query
 
-		Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI ,null, null, null, null); 
-        
+		Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI ,null, null, null, null);      
         cursor.moveToFirst();
-        System.out.println(cursor.getCount());
+
         if(cursor.getCount()>0){
         	while(cursor.moveToNext()){
         		
-        		String userId;
         		String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
         		String number = null;
         		Integer hasPhone = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER)));
-           		if(name != null && hasPhone == 1){
+           		if(hasPhone == 1){
             		
-           			userId = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+           			String userId = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
            			Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
            				  ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ userId, null, null); 
-
+           			
+           			int version = 0;
+                    String[] projection = new String[] {RawContacts.VERSION};
+                    Cursor rawCursor = context.getContentResolver().query(RawContacts.CONTENT_URI ,projection, 
+                    		RawContacts.CONTACT_ID + "=" + userId, null, null);
+                			
+            		//Version Lesen		
+            		if (rawCursor != null && rawCursor.moveToFirst()) {
+                        // Just return the first one.
+            			version =  rawCursor.getInt(rawCursor.getColumnIndex(RawContacts.VERSION));
+                    }
+            		
+            		rawCursor.close();
+           			
            			while(phoneCursor.moveToNext()){       				
            					
            				number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
            				
            				if(number.length() >= 7){
            					
-           					HandyContact user = new HandyContact(cleanNumber(number), name);
+           					if(name == null){
+    							
+    							name = number;
+    						}
            					
+           					Log.d("TAG", name);
+           					Log.d("TAG", number);
+           					//Für den Roster
+           					//HandyContact user = new HandyContact(cleanNumber(number), name);
+           					HandyContact user = new HandyContact(Integer.valueOf(userId),cleanNumber(number), name, version);
+
            					list.add(user);
            				}
            				
@@ -146,4 +167,5 @@ public class HelperFunctions {
 
 		return cleandNumber;
 	}
+	
 }

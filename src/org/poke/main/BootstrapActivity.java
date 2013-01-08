@@ -1,6 +1,7 @@
 package org.poke.main;
 
 
+import org.poke.contact.ContactObserver;
 import org.poke.helper.AppFirstRun;
 import org.poke.index.IndexActivity;
 import org.poke.setup.SetupActivity;
@@ -8,6 +9,9 @@ import org.poke.util.ApplicationContext;
 import org.poke.xmpp.XMPPConnectionHandler;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Contacts.People;
+import android.provider.ContactsContract;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,12 +37,17 @@ public class BootstrapActivity extends Activity {
 		AppFirstRun afr = new AppFirstRun(this.getApplicationContext());
 		ApplicationContext.getInstance().setContext(getApplicationContext());
 		
+		//Register ContactObserver
+		ContactObserver co = new ContactObserver(new Handler(), getBaseContext());
+		getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, co);
+		
 		Intent intent;
 		
 		if(afr.getFirstRun()){
 			
 			Log.d("Run", "This is the first run");
 			intent = new Intent(this, SetupActivity.class);
+			
 		}
 		
 		else{

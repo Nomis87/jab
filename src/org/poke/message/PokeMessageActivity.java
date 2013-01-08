@@ -135,6 +135,8 @@ public class PokeMessageActivity extends Activity {
 		
 		Button okButton = (Button) pokeDialog.findViewById(R.id.dialogOkButton);
 		
+		pokeDialog.show();
+		
 		okButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -143,7 +145,7 @@ public class PokeMessageActivity extends Activity {
 			}
 		});
 		
-		pokeDialog.show();
+		
 		
 	}
 	

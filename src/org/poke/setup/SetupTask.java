@@ -1,11 +1,10 @@
 package org.poke.setup;
 
 import java.util.List;
-import java.util.Locale;
-
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.Form;
-import org.jivesoftware.smackx.search.UserSearchManager;
+import org.poke.database.DbContactsRepository;
+import org.poke.database.DbRosterRepository;
+import org.poke.database.DbUserRepository;
 import org.poke.error.SetupErrorActivity;
 import org.poke.helper.AppFirstRun;
 import org.poke.helper.HelperFunctions;
@@ -19,7 +18,6 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -113,47 +111,9 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	 */
 	private boolean init_Database(String userId, String username, String password){
 		
-		//True wenn 
-		boolean created = false;
-		
-		SQLiteDatabase db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		db.setVersion(1);
-		db.setLocale(Locale.getDefault());
-		db.setLockingEnabled(true); 
-		
-		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_USER);
-		
-		// Erstellen der Datenbank Taelle für den User
-		db.execSQL("CREATE TABLE IF NOT EXISTS " 
-				+ ApplicationConstants.DB_TABLE_USER
-				+ " (us_id VARCHAR PRIMARY KEY, us_username VARCHAR, us_password VARCHAR );");
-		
-		// Einfügen der Informationen
-		ContentValues userValues = new ContentValues();
-		userValues.put("us_id", userId);
-		userValues.put("us_username", username);
-		userValues.put("us_password", password);
-		db.insert(ApplicationConstants.DB_TABLE_USER, null, userValues);
-		
-		
-		// Testen ob die datenbak erfolgreich erstellt wurde		
-		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_USER, null);
-		c.moveToFirst();
-		String testUserid = c.getString(c.getColumnIndex("us_id"));
-		String testUsername = c.getString(c.getColumnIndex("us_username"));
-		String testPassword = c.getString(c.getColumnIndex("us_password"));
-		
-		if(testUserid.equals(userId)&&testUsername.equals(username)&&testPassword.equals(password)){
+		DbUserRepository repository = new DbUserRepository(context);
 			
-			created = true;
-		}
-		
-		
-		//Schließen des Cursors und der Datenbank
-		c.close();
-		db.close();
-		
-		return created;	
+		return repository.create(userId, username, password, countryCode);	
 		
 	}
 	
@@ -186,14 +146,7 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	private boolean init_Contactlist(String userId, String password){
 		
 		boolean checked = false;
-		
-		SQLiteDatabase db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		
-		// Erstellen der Datenbank Tabelle für den User
-		db.execSQL("CREATE TABLE IF NOT EXISTS " 
-					+ ApplicationConstants.DB_TABLE_ROSTER
-					+ " (ro_id VARCHAR PRIMARY KEY, ro_username VARCHAR);");
-		
+		DbRosterRepository rosterRepository = new DbRosterRepository(context);
 
 		try {
 			connectionHandler.login(userId, password);
@@ -206,11 +159,14 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 		if(checked){
 			
 			List<HandyContact> contacts = HelperFunctions.getInstance().getNumbersFromContacts(context);
+			//Kontaktlist abbildung auf Datenbank
+			DbContactsRepository contactsRepository = new DbContactsRepository(context);
 			
 			RosterStorage rs = new RosterStorage();
 						
 			for(HandyContact user : contacts){
 				
+				contactsRepository.saveContact(user);
 				
 				if(connectionHandler.isRegistered(countryCode+"_"+user.getNumber())){
 					
@@ -221,11 +177,9 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 					
 					Log.d(TAG, userJid);
 					
-					//Roster auf die Datenbank abbilden
-					ContentValues userValues = new ContentValues();
-					userValues.put("ro_id", userJid);
-					userValues.put("ro_username", user.getName());
-					db.insert(ApplicationConstants.DB_TABLE_ROSTER, null, userValues);
+					//Roster auf Datenbank abbilden
+					checked = rosterRepository.create(userJid, user.getName());
+					
 				}
 		
 			}
@@ -233,7 +187,6 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 		}
 		else checked = false;
 		
-		db.close();
 		connectionHandler.disconect();
 		
 		

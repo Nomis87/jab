@@ -123,7 +123,7 @@ public class IndexActivity extends Activity {
     	
     	serviceStateToggleButton.setOnClickListener(new OnClickListener() {
 			
-    		Intent pokeMessageService = new Intent(getApplicationContext(), PokeMessageService.class);
+    		//Intent pokeMessageService = new Intent(getApplicationContext(), PokeMessageService.class);
     
 			public void onClick(View v) {
 				
