@@ -13,24 +13,17 @@ public class DbUserRepository extends DbRepository{
 	
 	private final String TAG = "DbUserRepository";
 	
+	
 	public DbUserRepository(Context context) {
 		super(context);
 		
-		// Erstellen der Datenbank Tabelle für den User
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		db.execSQL("CREATE TABLE IF NOT EXISTS " 
-				+ ApplicationConstants.DB_TABLE_USER
-				+ " (us_id VARCHAR PRIMARY KEY, us_username VARCHAR, us_password VARCHAR, us_countryCode VARCHAR);");
-		db.close();
 	}
 
 	
-	
-
-
-	public boolean create(String userId, String username, String password, String countryCode) {
+	public boolean createUser(String userId, String username, String password, String countryCode) {
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
 		boolean created = false;
 		
 		//Einfügen der Informationen
@@ -64,7 +57,9 @@ public class DbUserRepository extends DbRepository{
 
 	
 
-	public User read() {
+	public User readUser() {
+		
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		// Testen ob die datenbak erfolgreich erstellt wurde		
 		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_USER, null);
@@ -76,19 +71,21 @@ public class DbUserRepository extends DbRepository{
 		
 		User user = new User(userid, username, password, countryCode);
 		
+		c.close();
+		db.close();
 		return user;
 	}
 
 
 
-	public void update() {
+	public void updateUser() {
 		
 		
 	}
 
 
 
-	public void delete() {
+	public void deleteUser() {
 		
 		
 	}

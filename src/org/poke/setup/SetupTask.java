@@ -6,19 +6,17 @@ import org.poke.database.DbContactsRepository;
 import org.poke.database.DbRosterRepository;
 import org.poke.database.DbUserRepository;
 import org.poke.error.SetupErrorActivity;
-import org.poke.helper.AppFirstRun;
+import org.poke.helper.ApplicationPreference;
 import org.poke.helper.HelperFunctions;
 import org.poke.index.IndexActivity;
 import org.poke.object.HandyContact;
-import org.poke.util.ApplicationConstants;
+import org.poke.object.RosterContact;
 import org.poke.xmpp.RosterStorage;
 import org.poke.xmpp.XMPPConnectionHandler;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -31,7 +29,7 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	
 	private Context context;
 	private SetupActivity sa;
-	private AppFirstRun afr;
+	private ApplicationPreference afr;
 	private XMPPConnectionHandler connectionHandler;
 	private ProgressDialog waitSpinner;
 	
@@ -51,7 +49,7 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		afr = new AppFirstRun(context);
+		afr = new ApplicationPreference(context);
 		connectionHandler = XMPPConnectionHandler.getInstance();
 		
 		waitSpinner = new ProgressDialog(context);
@@ -164,21 +162,25 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 			
 			RosterStorage rs = new RosterStorage();
 						
-			for(HandyContact user : contacts){
+			for(HandyContact handyContact : contacts){
 				
-				contactsRepository.saveContact(user);
+				contactsRepository.saveContact(handyContact);
 				
-				if(connectionHandler.isRegistered(countryCode+"_"+user.getNumber())){
+				if(connectionHandler.isRegistered(countryCode,handyContact.getNumber())){
 					
-					String userJid = countryCode+"_"+user.getNumber()+"@"+connectionHandler.getConnection().getServiceName();
+					String userJid = countryCode+"_"+handyContact.getNumber()+"@"+connectionHandler.getConnection().getServiceName();
 					
 					//Eintrag in den Roster einfügen
-					rs.addEntry(userJid, user.getName(),connectionHandler.getConnection());
+					rs.addEntry(countryCode, handyContact.getNumber(), handyContact.getName(),connectionHandler.getConnection());
 					
 					Log.d(TAG, userJid);
 					
+					RosterContact rc = new RosterContact();
+					rc.setJid(countryCode, handyContact.getNumber());
+					rc.setUsername(handyContact.getName());
+					
 					//Roster auf Datenbank abbilden
-					checked = rosterRepository.create(userJid, user.getName());
+					checked = rosterRepository.createRosterEntry(rc);
 					
 				}
 		

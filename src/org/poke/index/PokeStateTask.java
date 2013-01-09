@@ -1,7 +1,7 @@
 package org.poke.index;
 
 import org.jivesoftware.smack.XMPPException;
-import org.poke.helper.AppFirstRun;
+import org.poke.helper.ApplicationPreference;
 import org.poke.util.ApplicationConstants;
 import org.poke.xmpp.XMPPConnectionHandler;
 

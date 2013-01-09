@@ -10,6 +10,8 @@ import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.packet.Presence;
 import org.poke.object.RosterContact;
 
+import android.util.Log;
+
 public class RosterStorage {
 	
 	private final String TAG = "RosterStorage";
@@ -25,9 +27,9 @@ public class RosterStorage {
 		return instance;
 	}
 	
-	public void addEntry(String jid, String nickname, XMPPConnection connection) {
+	public void addEntry(String countryCode, String number, String nickname, XMPPConnection connection) {
 		
-		
+		String jid = countryCode+"_"+number+"@"+connection.getServiceName();
 		
 		if((connection!=null)&&(connection.isAuthenticated())){
 			
@@ -84,7 +86,49 @@ public class RosterStorage {
 		
 		return rcList;
 	}
+	
+	
+	public void updateEntry(RosterContact rcOld, RosterContact rcNew, XMPPConnection connection){
+		
+		if((connection!=null)&&(connection.isAuthenticated())){
+			
+			Roster roster = connection.getRoster();
+			
+			// Die Subscruption auf manuell setzen und asnchließend den Listener dafür Initialisieren
+			roster.setSubscriptionMode(SubscriptionMode.accept_all);
+			
+		    if(roster.contains(rcOld.getJid())){
+		    
+		    	try {
+		    		
+		    		removeEntry(rcOld, connection);
+		    		
+		    		//Ein Eintrag in den Roster erstellen
+		    		roster.createEntry(rcNew.getJid(), rcNew.getUsername(), null);
+		    		
+		    		Presence subscribe = new Presence(Presence.Type.subscribe);
+		    		subscribe.setTo(rcNew.getJid());
+		    		connection.sendPacket(subscribe);
+		    		
+		    		System.out.println(rcNew.getUsername()+"  wurde geupdated");
+		    	} 
+		    	catch (XMPPException e) {
+		    
+		    		System.out.println(rcNew.getUsername()+"  wurde nicht gefunden");
+		    		System.out.println(rcNew.getJid());
+		    	}
+		    }
+			
+		}
+		
+	}
 
+	/**
+	 * Liefert 
+	 * @param userId
+	 * @param connection
+	 * @return
+	 */
 	public RosterContact getEntry(String userId, XMPPConnection connection) {
 		
 		ArrayList<RosterContact> contacList = getEntries(connection);
@@ -101,7 +145,12 @@ public class RosterStorage {
 		
 		return entry;
 	}
-
+	
+	/**
+	 * Zählt wieviele Kontakte sich im Roster befinden
+	 * @param connection XmppConection
+	 * @return die Anzahl der Kontakte die sich im Roster befinden
+	 */
 	public Integer getEntryCount(XMPPConnection connection) {
 		
 		Integer count = null;
@@ -116,21 +165,35 @@ public class RosterStorage {
 	}
 	
 	
-	//TODO Muss noch implementiert werden
-	public void removeEntry(String userId, XMPPConnection connection) {
+	/**
+	 * Metode zum löschen eines Contacts aus dem roster
+	 * @param rc RosterContact beinhaltet JID und name
+	 * @param connection XmppConnection 
+	 */
+	public void removeEntry(RosterContact rc, XMPPConnection connection) {
 		
-//		RosterEntry entry = getEntry(userId, connection);
-//		
-//		if((connection!=null)&&(connection.isAuthenticated())){
-//			
-//			connection.getRoster().setSubscriptionMode(SubscriptionMode.manual);
-//			try {
-//				connection.getRoster().removeEntry(entry);
-//			} catch (XMPPException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		
+		if((connection!=null)&&(connection.isAuthenticated())){
+			
+			Roster roster = connection.getRoster();
+					
+			try {
+				
+				if(roster.contains(rc.getJid())){
+					
+					roster.removeEntry(roster.getEntry(rc.getJid()));
+				}
+				else{
+					
+					Log.d(TAG, rc.getUsername()+" befindet sich nicht im Roster");
+				}
+				
+				
+			} catch (XMPPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 

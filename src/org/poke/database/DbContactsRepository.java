@@ -62,9 +62,9 @@ public class DbContactsRepository extends DbRepository {
 			int hId = c.getInt(c.getColumnIndex("hc_id"));
 			String hNumber = c.getString(c.getColumnIndex("hc_number"));
 			String hName = c.getString(c.getColumnIndex("hc_name"));
-			String hVersion = c.getString(c.getColumnIndex("hc_version"));
+			int hVersion = c.getInt(c.getColumnIndex("hc_version"));
 			
-			HandyContact hContact = new HandyContact(hId, hNumber, hName, Integer.getInteger(hVersion));
+			HandyContact hContact = new HandyContact(hId, hNumber, hName, hVersion);
 			
 			contacts.add(hContact);			
 		}
@@ -111,33 +111,39 @@ public class DbContactsRepository extends DbRepository {
 	
 	public HandyContact findContactById(int id){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		
 		HandyContact hContact = null;
+		List<HandyContact> contactList = getAllContacts();
 		
-		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_CONTACTS, null);
-		c.moveToFirst();
-		
-		while(c.moveToNext()){
+		for(HandyContact contact : contactList){
 			
-			if(c.getInt(c.getColumnIndex("hc_id")) == id){
+			if(contact.getId() == id){
 				
-				int hId = c.getInt(c.getColumnIndex("hc_id"));
-				String hNumber = c.getString(c.getColumnIndex("hc_number"));
-				String hName = c.getString(c.getColumnIndex("hc_name"));
-				String hVersion = c.getString(c.getColumnIndex("hc_version"));
-				
-				hContact = new HandyContact(hId, hNumber, hName, Integer.getInteger(hVersion));
-				break;
+				return contact;
 			}
 			
 		}
 		
-		db.close();
-		
 		return hContact;
+	}
+	
+	public void deleteContact(HandyContact hc){
+		
+		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		
+		db.delete(ApplicationConstants.DB_TABLE_CONTACTS, "hc_id"+"="+hc.getId(), null);
+		
+		db.close();
 		
 	}
 	
+	public void deleteContactById(int id){
+		
+		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		
+		db.delete(ApplicationConstants.DB_TABLE_CONTACTS, "hc_id"+"="+id, null);
+		
+		db.close();
+		
+	}
 
 }

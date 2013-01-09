@@ -129,7 +129,9 @@ public class XMPPConnectionHandler {
 	 * @param userId die userID des Benutzers
 	 * @return true wenn er registriert ist false wenn nicht.
 	 */
-	public boolean isRegistered(String userId){
+	public boolean isRegistered(String countryCode, String number){
+		
+		String userId = countryCode+"_"+number;
 		
 		boolean registered = false;
 		

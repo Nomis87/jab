@@ -10,6 +10,7 @@ import org.poke.util.ApplicationConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
@@ -22,6 +23,8 @@ import android.util.Log;
 public class HelperFunctions {
 	
 	private static HelperFunctions instance = null;
+	
+	private static String TAG = "HelperFunctions";
 	
 	public static synchronized HelperFunctions getInstance(){
 		
@@ -90,18 +93,20 @@ public class HelperFunctions {
 		
 		 // Run query
 
-		Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI ,null, null, null, null);      
-        cursor.moveToFirst();
-
+		Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI ,null, null, null, null);
+		
+		String prevNumber = "first";
+		
         if(cursor.getCount()>0){
         	while(cursor.moveToNext()){
         		
         		String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
         		String number = null;
+        		
         		Integer hasPhone = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER)));
            		if(hasPhone == 1){
             		
-           			String userId = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
+           			int userId = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID));
            			Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
            				  ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ userId, null, null); 
            			
@@ -120,22 +125,34 @@ public class HelperFunctions {
            			
            			while(phoneCursor.moveToNext()){       				
            					
-           				number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-           				
-           				if(number.length() >= 7){
+           				int phoneType = phoneCursor.getInt(phoneCursor.getColumnIndex(Phone.TYPE));
+           				if(Phone.TYPE_MOBILE == phoneType){
            					
-           					if(name == null){
+           					number = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+           					
+           					
+           					if(number.length() >= 7){
+           						
+           						if(!cleanNumber(number).equals(cleanNumber(prevNumber))){
+           							
+           							if(name == null){
     							
-    							name = number;
-    						}
-           					
-           					Log.d("TAG", name);
-           					Log.d("TAG", number);
-           					//Für den Roster
-           					//HandyContact user = new HandyContact(cleanNumber(number), name);
-           					HandyContact user = new HandyContact(Integer.valueOf(userId),cleanNumber(number), name, version);
+           								name = number;
+           							}
+           							
+//           							Log.d(TAG, "Name: "+name);
+//           							Log.d(TAG, "Number: "+cleanNumber(number));
+//           							Log.d(TAG, "PrevNumber: "+cleanNumber(prevNumber));
+           							prevNumber = number;
+           							
+           							//Für den Roster
+           							//HandyContact user = new HandyContact(cleanNumber(number), name);
+           							HandyContact user = new HandyContact(userId,cleanNumber(number), name, version);
 
-           					list.add(user);
+           							list.add(user);
+           							break;
+           						}
+           					}
            				}
            				
            			}

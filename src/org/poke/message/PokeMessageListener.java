@@ -49,7 +49,7 @@ public class PokeMessageListener implements PacketListener {
 				
 				RosterStorage rs = new RosterStorage();
 				try {
-					handler.login(userRepository.read().getUserId(), userRepository.read().getPassword());
+					handler.login(userRepository.readUser().getUserId(), userRepository.readUser().getPassword());
 				} catch (XMPPException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

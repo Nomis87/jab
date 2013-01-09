@@ -1,5 +1,7 @@
 package org.poke.object;
 
+import org.poke.util.ApplicationConstants;
+
 public class RosterContact {
 	
 	private String jid;
@@ -15,6 +17,12 @@ public class RosterContact {
 
 	public void setJid(String jid) {
 		this.jid = jid;
+	}
+	
+	public void setJid(String countryCode, String number){
+		
+		
+		this.jid = countryCode+"_"+number+"@"+ApplicationConstants.SERVER_NAME;
 	}
 
 	public String getUsername() {
