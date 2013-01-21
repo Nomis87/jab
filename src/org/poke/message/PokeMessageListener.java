@@ -1,26 +1,21 @@
 package org.poke.message;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.poke.database.DbUserRepository;
 import org.poke.util.ApplicationContext;
-import org.poke.xmpp.RosterStorage;
-import org.poke.xmpp.XMPPConnectionHandler;
-
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 public class PokeMessageListener implements PacketListener {
 	
-	private final String TAG = "PokeMessageReceiver"; 
+	private final String TAG = "PokeMessageListener"; 
 	private Context context;
 	
 	public void processPacket(Packet packet) {
 		
-		context = ApplicationContext.getInstance().getContext();
+		this.context = ApplicationContext.getInstance().getContext();
 		
 		Log.d(TAG, "Packet empfangen !!!");
 		
@@ -32,33 +27,16 @@ public class PokeMessageListener implements PacketListener {
 				
 				if(message.getFrom() != null){
 				
-					Intent service = new Intent(context,PokeMessageService.class);
-					service.putExtra("pokeSender", message.getFrom());
-					service.putExtra("pokeMessage", message.getBody());
-					context.startService(service);
+					Intent intent = new Intent(PokeMessageReceiver.POKEMESSAGE_INTENT);
+					intent.putExtra("pokeSender", message.getFrom());
+					intent.putExtra("pokeMessage", message.getBody());
+					context.sendBroadcast(intent);
 					
 					Log.d(TAG, "From: ["+message.getFrom()+"] Message: ["+message.getBody()+"]");
 				
 				}
 			}
 			
-			if(message.getType() == Message.Type.error){
-				
-				XMPPConnectionHandler handler = XMPPConnectionHandler.getInstance();
-				DbUserRepository userRepository = new DbUserRepository(context);
-				
-				RosterStorage rs = new RosterStorage();
-				try {
-					handler.login(userRepository.readUser().getUserId(), userRepository.readUser().getPassword());
-				} catch (XMPPException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				//Hier muss noch der Nickname geprüft werden	
-				//rs.addEntry(message.getFrom(), nickname, connection)
-
-			}
 		}
 		
 	}

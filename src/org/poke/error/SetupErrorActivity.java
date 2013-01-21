@@ -1,9 +1,6 @@
 package org.poke.error;
 
 import org.poke.main.R;
-import org.poke.main.R.layout;
-import org.poke.main.R.menu;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

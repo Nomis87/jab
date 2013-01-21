@@ -1,6 +1,7 @@
 package org.poke.setup;
 
 import java.util.List;
+
 import org.jivesoftware.smack.XMPPException;
 import org.poke.database.DbContactsRepository;
 import org.poke.database.DbRosterRepository;
@@ -8,11 +9,12 @@ import org.poke.database.DbUserRepository;
 import org.poke.error.SetupErrorActivity;
 import org.poke.helper.ApplicationPreference;
 import org.poke.helper.HelperFunctions;
-import org.poke.index.IndexActivity;
-import org.poke.object.HandyContact;
-import org.poke.object.RosterContact;
-import org.poke.xmpp.RosterStorage;
+import org.poke.main.BootstrapActivity;
+import org.poke.object.User;
+import org.poke.object.contact.HandyContact;
+import org.poke.object.contact.RosterContact;
 import org.poke.xmpp.XMPPConnectionHandler;
+import org.poke.xmpp.XMPPRosterStorage;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,7 +23,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 /**
- * Task for first Setup
+ * Task für die Installation der Applikation
  * @author Tobias
  *
  */
@@ -89,7 +91,7 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 		Intent intent;
 		
 		if(result == true){
-			intent = new Intent(context, IndexActivity.class);
+			intent = new Intent(context, BootstrapActivity.class);
 			afr.setRunned();
 			
 		}
@@ -110,8 +112,10 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 	private boolean init_Database(String userId, String username, String password){
 		
 		DbUserRepository repository = new DbUserRepository(context);
-			
-		return repository.create(userId, username, password, countryCode);	
+		
+		User user = new User(userId, username, password, countryCode);
+		
+		return repository.createUser(user);	
 		
 	}
 	
@@ -154,13 +158,15 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 			e.printStackTrace();
 		}
 		
+		//connectionHandler.setMessageReceiver();
+		
 		if(checked){
 			
 			List<HandyContact> contacts = HelperFunctions.getInstance().getNumbersFromContacts(context);
 			//Kontaktlist abbildung auf Datenbank
 			DbContactsRepository contactsRepository = new DbContactsRepository(context);
 			
-			RosterStorage rs = new RosterStorage();
+			XMPPRosterStorage rs = new XMPPRosterStorage();
 						
 			for(HandyContact handyContact : contacts){
 				
@@ -169,6 +175,8 @@ public class SetupTask extends AsyncTask<String, Integer, Boolean> {
 				if(connectionHandler.isRegistered(countryCode,handyContact.getNumber())){
 					
 					String userJid = countryCode+"_"+handyContact.getNumber()+"@"+connectionHandler.getConnection().getServiceName();
+					
+					connectionHandler.sendSubscribeMessage(userJid);
 					
 					//Eintrag in den Roster einfügen
 					rs.addEntry(countryCode, handyContact.getNumber(), handyContact.getName(),connectionHandler.getConnection());

@@ -1,4 +1,4 @@
-package org.poke.object;
+package org.poke.object.contact;
 
 import android.os.Parcel;
 import android.os.Parcelable;

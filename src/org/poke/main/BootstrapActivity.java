@@ -5,17 +5,13 @@ import org.poke.contact.ContactObserver;
 import org.poke.helper.ApplicationPreference;
 import org.poke.index.IndexActivity;
 import org.poke.setup.SetupActivity;
-import org.poke.util.ApplicationConstants;
 import org.poke.util.ApplicationContext;
-import org.poke.xmpp.XMPPConnectionHandler;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Contacts.People;
-import android.provider.ContactsContract;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 /**
@@ -37,7 +33,6 @@ public class BootstrapActivity extends Activity {
 		ApplicationContext.getInstance().setContext(getApplicationContext());
 		
 		
-			
 		//Register ContactObserver
 		//afr.setAsync();
 		ContactObserver co = new ContactObserver(new Handler(), getBaseContext());
@@ -57,12 +52,12 @@ public class BootstrapActivity extends Activity {
 			Log.d("Run", "This is not the first run");
 			intent = new Intent(this, IndexActivity.class);	
 			
-//			//Solange bis die SharedPreference auf true gesetzt wurde. 
-//			getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, co);
-//			while(!afr.isSync()){
-//				
-//				getContentResolver().notifyChange(ContactsContract.Contacts.CONTENT_URI ,co);
-//			}
+			//Main Service
+			Intent serviceIntent = new Intent(getApplicationContext(), MainService.class);
+			startService(serviceIntent);
+			
+			//XMPPConnectionHandler.getInstance().addConnectionListener(getApplicationContext());
+			
 		}
 		
 		startActivity(intent);

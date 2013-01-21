@@ -1,6 +1,14 @@
 package org.poke.util;
 
+/**
+ * Enthält alle wichtigen Applicationsinformationen.
+ * @author Tobias
+ *
+ */
 public class ApplicationConstants {
+	
+	//App Name
+	public static final String APP_NAME = "Poke";
 	
 	//Server Informations
 	public static final String SERVER_HOST = "codeinjection.dyndns.org";
@@ -12,6 +20,10 @@ public class ApplicationConstants {
 	public static final String DB_TABLE_USER = SERVER_NAME+"_user";
 	public static final String DB_TABLE_ROSTER = SERVER_NAME+"_roster";
 	public static final String DB_TABLE_CONTACTS = SERVER_NAME+"_handyContacts";
+	public static final String DB_TABLE_OFFLINE_MESSAGES = SERVER_NAME+"_outgoingMessages";
+	public static final String DB_TABLE_TIMED_MESSAGES = SERVER_NAME+"_timedMessages";
+	public static final String DB_TABLE_SENDED_MESSAGES = SERVER_NAME+"_sendedMessages";
+	public static final String DB_TABLE_MESSAGE_SOUNDS = SERVER_NAME+"_messageSounds";
 	public static final int DB_VERSION = 1;
 		
 	// Salt password 

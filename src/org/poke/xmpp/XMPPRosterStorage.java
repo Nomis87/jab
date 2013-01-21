@@ -8,25 +8,39 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.packet.Presence;
-import org.poke.object.RosterContact;
+import org.poke.object.contact.RosterContact;
 
 import android.util.Log;
 
-public class RosterStorage {
+/**
+ * Singelton Klasse<br/>
+ * Enthält funktionalitäten um einen Roster auf dem XMPPServer zu<br/>
+ * manipulieren.
+ * @author Tobias
+ *
+ */
+public class XMPPRosterStorage {
 	
 	private final String TAG = "RosterStorage";
 	
-	public static RosterStorage instance = null;
+	public static XMPPRosterStorage instance = null;
 	
-	public static synchronized RosterStorage getInstance(){
+	public static synchronized XMPPRosterStorage getInstance(){
 		
 		if(instance == null){
-			instance = new RosterStorage();
+			instance = new XMPPRosterStorage();
 		}
 		
 		return instance;
 	}
 	
+	/**
+	 * Funktion welche das eintragen eines neuen Kontaktes in den Roster ermöglicht.
+	 * @param countryCode
+	 * @param number
+	 * @param nickname
+	 * @param connection
+	 */
 	public void addEntry(String countryCode, String number, String nickname, XMPPConnection connection) {
 		
 		String jid = countryCode+"_"+number+"@"+connection.getServiceName();
@@ -55,6 +69,39 @@ public class RosterStorage {
 		    
 		    		System.out.println(nickname+"  wurde nicht gefunden");
 		    		System.out.println(jid);
+		    	}
+		    }
+			
+		}
+		
+	}
+	
+	public void addEntry(RosterContact rc, XMPPConnection connection){
+		
+		if((connection!=null)&&(connection.isAuthenticated())){
+			
+			Roster roster = connection.getRoster();
+			
+			// Die Subscruption auf manuell setzen und asnchließend den Listener dafür Initialisieren
+			roster.setSubscriptionMode(SubscriptionMode.accept_all);
+			
+		    if(!roster.contains(rc.getJid())){
+		    
+		    	try {
+		    		
+		    		//Ein Eintrag in den Roster erstellen
+		    		roster.createEntry(rc.getJid(), rc.getUsername(), null);
+		    		
+		    		Presence subscribe = new Presence(Presence.Type.subscribe);
+		    		subscribe.setTo(rc.getJid());
+		    		connection.sendPacket(subscribe);
+		    		
+		    		System.out.println(rc.getUsername()+"  wurde hinzugefügt");
+		    	} 
+		    	catch (XMPPException e) {
+		    
+		    		System.out.println(rc.getUsername()+"  wurde nicht gefunden");
+		    		System.out.println(rc.getJid());
 		    	}
 		    }
 			
@@ -124,7 +171,7 @@ public class RosterStorage {
 	}
 
 	/**
-	 * Liefert 
+	 * Liefert den passenden Eintrag zu der userId
 	 * @param userId
 	 * @param connection
 	 * @return

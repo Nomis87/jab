@@ -3,14 +3,13 @@ package org.poke.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.poke.object.HandyContact;
+import org.poke.object.contact.HandyContact;
 import org.poke.util.ApplicationConstants;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DbContactsRepository extends DbRepository {
 	
@@ -19,18 +18,12 @@ public class DbContactsRepository extends DbRepository {
 	
 	public DbContactsRepository(Context context) {
 		super(context);
-		
-		// Erstellen der Datenbank Tabelle für den User
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		db.execSQL("CREATE TABLE IF NOT EXISTS " 
-				+ ApplicationConstants.DB_TABLE_CONTACTS
-				+ " (hc_id INTEGER PRIMARY KEY, hc_number VARCHAR, hc_name VARCHAR, hc_version INTEGER);");
-		db.close();
+	
 	}
 	
 	public HandyContact getLastContact(){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_CONTACTS, null);
 		c.moveToLast();
@@ -50,25 +43,29 @@ public class DbContactsRepository extends DbRepository {
 	
 	public List<HandyContact> getAllContacts(){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		List<HandyContact> contacts = new ArrayList<HandyContact>();
 		
 		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_CONTACTS, null);
-		c.moveToFirst();
 		
-		while(c.moveToNext()){
+		if(c.moveToFirst()){
 			
-			int hId = c.getInt(c.getColumnIndex("hc_id"));
-			String hNumber = c.getString(c.getColumnIndex("hc_number"));
-			String hName = c.getString(c.getColumnIndex("hc_name"));
-			int hVersion = c.getInt(c.getColumnIndex("hc_version"));
+			do{
+				int hId = c.getInt(c.getColumnIndex("hc_id"));
+				String hNumber = c.getString(c.getColumnIndex("hc_number"));
+				String hName = c.getString(c.getColumnIndex("hc_name"));
+				int hVersion = c.getInt(c.getColumnIndex("hc_version"));
+				
+				HandyContact hContact = new HandyContact(hId, hNumber, hName, hVersion);
+				
+				contacts.add(hContact);	
+			}		
+			while(c.moveToNext());
 			
-			HandyContact hContact = new HandyContact(hId, hNumber, hName, hVersion);
-			
-			contacts.add(hContact);			
 		}
 		
+		c.close();
 		db.close();
 		
 		return contacts;
@@ -77,12 +74,7 @@ public class DbContactsRepository extends DbRepository {
 	
 	public void saveContact(HandyContact hc){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
-		
-		Log.d(TAG, "ID: "+hc.getId());
-		Log.d(TAG, "Number: "+hc.getNumber());
-		Log.d(TAG, "Version: "+hc.getVersion());
-		Log.d(TAG, "Name: "+hc.getName());
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		ContentValues contactValue = new ContentValues();
 		contactValue.put("hc_id", hc.getId());
@@ -97,7 +89,7 @@ public class DbContactsRepository extends DbRepository {
 	
 	public void updateContact(HandyContact hc){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		ContentValues contactValue = new ContentValues();
 		contactValue.put("hc_number", hc.getNumber());
@@ -128,7 +120,7 @@ public class DbContactsRepository extends DbRepository {
 	
 	public void deleteContact(HandyContact hc){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		db.delete(ApplicationConstants.DB_TABLE_CONTACTS, "hc_id"+"="+hc.getId(), null);
 		
@@ -138,12 +130,13 @@ public class DbContactsRepository extends DbRepository {
 	
 	public void deleteContactById(int id){
 		
-		db = context.openOrCreateDatabase(ApplicationConstants.DB_NAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
 		db.delete(ApplicationConstants.DB_TABLE_CONTACTS, "hc_id"+"="+id, null);
 		
 		db.close();
 		
 	}
+	
 
 }

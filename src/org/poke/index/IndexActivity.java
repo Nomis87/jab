@@ -1,22 +1,19 @@
 package org.poke.index;
 
 import org.poke.main.R;
-import org.poke.message.PokeMessageService;
 import org.poke.newPoke.NewPokeActivity;
-import org.poke.xmpp.XMPPConnectionHandler;
-
+import org.poke.newPoke.NewTimedPokeActivity;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ToggleButton;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class IndexActivity extends Activity {
 	
@@ -24,10 +21,12 @@ public class IndexActivity extends Activity {
 	
 	private Context context;
 	
+	private SeekBar volumeFader;
 	private Button myPokesButton;
 	private Button newPokeButton;
-	private Button contactListButton;
-	private ToggleButton serviceStateToggleButton;
+	private Button newTimedPokeButton;
+	
+	private AudioManager audioManager = null;
 //	private ToggleButton soundStateToggleButton;
 
 	
@@ -52,18 +51,49 @@ public class IndexActivity extends Activity {
         context = this;
     	
     	//Init Buttons + Listeners
-        serviceStateToggleButton = (ToggleButton) findViewById(R.id.toggleButtonSetService);
+        //serviceStateToggleButton = (ToggleButton) findViewById(R.id.toggleButtonSetService);
+        volumeFader = (SeekBar) findViewById(R.id.volumeFader);
+        volumeFaderListener();
 		myPokesButton = (Button) findViewById(R.id.buttonMyPokes);
 		myPokesButtonListener();
 		newPokeButton = (Button) findViewById(R.id.buttonNewPoke);
 		newPokeButtonListener();
-		contactListButton = (Button) findViewById(R.id.buttonContactList);
-		contactListButtonListener();
-		
-		serviceStateToggleButtonListener();
-//		soundStateToggleButton = (ToggleButton) findViewById(R.id.toggleButtonSound);
-//		soundStateToggleButtonListener();
+		newTimedPokeButton = (Button) findViewById(R.id.buttonContactList);
+		newTimedPokeButtonListener();
     	
+    }
+    
+    private void volumeFaderListener(){
+    	
+    	this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+    	
+    	audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+    	
+    	volumeFader.setMax(audioManager
+    	        .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+    	//Set the progress with current Media Volume
+    	volumeFader.setProgress(audioManager
+    	        .getStreamVolume(AudioManager.STREAM_MUSIC));
+    	
+    	volumeFader.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+			}
+		});
     }
     
     private void myPokesButtonListener(){
@@ -92,66 +122,20 @@ public class IndexActivity extends Activity {
 		});
     }
     
-    private void contactListButtonListener(){
+    private void newTimedPokeButtonListener(){
     	
-    	contactListButton.setOnClickListener(new OnClickListener() {
+    	newTimedPokeButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				
+				Intent intent = new Intent(context, NewTimedPokeActivity.class);
+				context.startActivity(intent);
 				
 			}
 		});
     }
     
-    //TODO Empfangen von Pokes deaktivieren 
-    private void serviceStateToggleButtonListener(){
-    	
-    	
-    	if(XMPPConnectionHandler.getInstance().getConnection().isAuthenticated()){
-    		
-    		myPokesButton.setVisibility(View.VISIBLE);
-    		newPokeButton.setVisibility(View.VISIBLE);
-    		contactListButton.setVisibility(View.VISIBLE);
-        	serviceStateToggleButton.setChecked(true);
-    	}
-    	else{
-    		
-    		myPokesButton.setVisibility(View.GONE);
-    		newPokeButton.setVisibility(View.GONE);
-    		contactListButton.setVisibility(View.GONE);
-    	}
-    	
-    	serviceStateToggleButton.setOnClickListener(new OnClickListener() {
-			
-    		//Intent pokeMessageService = new Intent(getApplicationContext(), PokeMessageService.class);
-    
-			public void onClick(View v) {
-				
-				
-				PokeStateTask pst = new PokeStateTask(context, 
-						XMPPConnectionHandler.getInstance().getConnection().isAuthenticated());
-				
-				pst.execute();
-				
-				if(XMPPConnectionHandler.getInstance().getConnection().isAuthenticated()){
-					
-					myPokesButton.setVisibility(View.GONE);
-		    		newPokeButton.setVisibility(View.GONE);
-		    		contactListButton.setVisibility(View.GONE);
-	
-				}
-				else{
-					
-					myPokesButton.setVisibility(View.VISIBLE);
-		    		newPokeButton.setVisibility(View.VISIBLE);
-		    		contactListButton.setVisibility(View.VISIBLE);
-
-				}
-				
-			}
-		});
-    	
-    }
+   
     
     
 }

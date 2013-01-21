@@ -3,15 +3,12 @@ package org.poke.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.poke.object.RosterContact;
+import org.poke.object.contact.RosterContact;
 import org.poke.util.ApplicationConstants;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 public class DbRosterRepository extends DbRepository {
 	
@@ -28,8 +25,7 @@ public class DbRosterRepository extends DbRepository {
 	 * Erstellt einen Eintrag in den Roster und prüft 
 	 * anschließend ob dieser korrekt erstellt wurde.
 	 * 
-	 * @param userJid
-	 * @param username
+	 * @param 
 	 * @return
 	 */
 	public boolean createRosterEntry(RosterContact rc){
@@ -50,8 +46,23 @@ public class DbRosterRepository extends DbRepository {
 		return created;
 	}
 	
-	public void findRosterEntry() {
+	
+	public RosterContact findRosterEntryById(String testId) {
 		
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		 
+        Cursor cursor = db.query(ApplicationConstants.DB_TABLE_ROSTER, new String[] { "ro_id",
+                "ro_username"}, "ro_id" + " = ?",
+                new String[] { String.valueOf(testId) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+ 
+        RosterContact rosterContact = new RosterContact();
+        rosterContact.setJid(cursor.getString(0));
+        rosterContact.setUsername(cursor.getString(1));
+        
+        // return contact
+        return rosterContact;
 		
 	}
 	
@@ -63,7 +74,7 @@ public class DbRosterRepository extends DbRepository {
 		contactValues.put("ro_id", rcNew.getJid());
 		contactValues.put("ro_username", rcNew.getUsername());
 		
-		db.update(ApplicationConstants.DB_TABLE_ROSTER, contactValues, "ro_id"+" = ?", new String[] {String.valueOf(rcOld)});
+		db.update(ApplicationConstants.DB_TABLE_ROSTER, contactValues, "ro_id"+" = ?", new String[] {rcOld.getJid()});
 	
 		db.close();
 	}
@@ -72,9 +83,32 @@ public class DbRosterRepository extends DbRepository {
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-		db.delete(ApplicationConstants.DB_TABLE_ROSTER, "ro_id"+" = ?", new String[] {String.valueOf(rc.getJid())});
+		db.delete(ApplicationConstants.DB_TABLE_ROSTER, "ro_id"+" = ?", new String[] {rc.getJid()});
 
 		db.close();
+	}
+	
+	public boolean containsRosterEntry(RosterContact rc){
+		
+		boolean check = false;
+		
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_ROSTER, null);
+    	
+    	if(c.moveToFirst()){
+	    	do{
+	    		
+	    		if(c.getString(c.getColumnIndex("ro_id")).equals(rc.getJid())){
+	    			
+	    			check = true;
+	    		}
+	    	}
+	    	while(c.moveToNext());
+    	}
+		
+    	db.close();
+		return check;
 	}
 	
 	public List<RosterContact> getAllRosterEntrys(){
@@ -85,8 +119,8 @@ public class DbRosterRepository extends DbRepository {
     	SQLiteDatabase db = dbHelper.getWritableDatabase();
     	
     	Cursor c = db.rawQuery("SELECT * FROM "+ApplicationConstants.DB_TABLE_ROSTER, null);
-    	c.moveToFirst();
-    	if(c.getCount() > 0){
+    	
+    	if(c.moveToFirst()){
 	    	do{
 	    		
 	    		RosterContact rc = new RosterContact();

@@ -64,6 +64,7 @@
 		    android:layout_gravity="center"
 		    android:layout_marginTop="2dp"
 		    android:background="#FFFFFF"
+		    android:textColor="#000000"
 		    android:drawSelectorOnTop = "true"/>
 
         <!-- Hier ist der Abschnitt für die Eingabe der Telefonnummer -->
@@ -86,6 +87,7 @@
             android:layout_gravity="center"
             android:ems="10"
             android:inputType="phone"
+            android:textColor="#000000"
             android:background="#FFFFFF">
             <requestFocus/>
         </EditText>
@@ -111,6 +113,7 @@
             android:layout_gravity="center"
             android:ems="10"
             android:inputType="text" 
+            android:textColor="#000000"
         	android:background="#FFFFFF">
             <requestFocus/>
         </EditText> 
@@ -135,6 +138,7 @@
             android:layout_gravity="center"
             android:ems="10"
             android:inputType="textPassword" 
+            android:textColor="#000000"
             android:background="#FFFFFF">
             <requestFocus/>
         </EditText> 

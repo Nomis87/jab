@@ -1,17 +1,12 @@
 package org.poke.contact;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.poke.database.DbContactsRepository;
-import org.poke.database.DbRosterRepository;
 import org.poke.helper.ApplicationPreference;
 import org.poke.helper.HelperFunctions;
-import org.poke.object.HandyContact;
-import org.poke.object.RosterContact;
-import org.poke.xmpp.RosterStorage;
-
+import org.poke.object.contact.HandyContact;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
@@ -21,6 +16,11 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
 
+/**
+ * Klasse Zum beobachten von Aenderung an der Kontaktliste.
+ * @author Tobias
+ *
+ */
 public class ContactObserver extends ContentObserver {
 	
 	//Debug Tag
@@ -40,9 +40,6 @@ public class ContactObserver extends ContentObserver {
 	private List<HandyContact> handyContacts;
 	private HandyContact handyContact;
 	
-	//Debug kram
-	private String debug;
-	
 	private Context context;
 	
 	public ContactObserver(Handler handler, Context context) {
@@ -55,74 +52,71 @@ public class ContactObserver extends ContentObserver {
 	
 	@Override
 	public void onChange(boolean selfChange) {
-		// TODO Auto-generated method stub
+		
 		super.onChange(selfChange);
 		
 		Log.d(TAG, "Somthing changed");
 		
 		contactsRepository = new DbContactsRepository(context);
 		
-		
 		handyContacts = new ArrayList<HandyContact>();
 		
-		debugFunction();
+		if(testCreateOperation() == true){
+			
+			ArrayList<Integer> contactIdList = new ArrayList<Integer>();
+			
+			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
+			intent.putExtra("contactOperation", CONTACT_CREATED);
+			for(HandyContact hc : handyContacts){
+				
+				contactIdList.add(hc.getId());
+				contactsRepository.saveContact(hc);
+			}
+			
+			intent.putIntegerArrayListExtra("contactIdList", contactIdList);
+			context.sendBroadcast(intent);
 		
-//		if(testCreateOperation() == true){
-//			
-//			ArrayList<Integer> contactIdList = new ArrayList<Integer>();
-//			
-//			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
-//			intent.putExtra("contactOperation", CONTACT_CREATED);
-//			for(HandyContact hc : handyContacts){
-//				
-//				contactIdList.add(hc.getId());
-//				contactsRepository.saveContact(hc);
-//			}
-//			
-//			intent.putIntegerArrayListExtra("contactIdList", contactIdList);
-//			context.sendBroadcast(intent);
-//		
-//		}
-//		
-//		else if(testUpdateOperation()){
-//			
-//			ArrayList<Integer> contactIdListnew = new ArrayList<Integer>();
-//			ArrayList<String> contactNumbers = new ArrayList<String>();
-//			
-//			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
-//			intent.putExtra("contactOperation", CONTACT_UPDATED);
-//			
-//			for(HandyContact hc : handyContacts){
-//				
-//				contactIdListnew.add(hc.getId());
-//				contactNumbers.add(hc.getNumber());
-//				contactsRepository.updateContact(hc);
-//			}
-//			
-//			intent.putStringArrayListExtra("oldContactNumbers", contactNumbers);
-//			intent.putIntegerArrayListExtra("contactIdList", contactIdListnew);
-//			context.sendBroadcast(intent);
-//			//Contact Receiver mit updated param und kontaktid param
-//		}
-//		
-//		// Eventuell auch mit mehreren Nummern machen wie bei 
-//		else if(testDeleteOperation()){
-//			
-//			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
-//			intent.putExtra("contactOperation", CONTACT_DELETED);
-//			intent.putExtra("oldNumber", this.handyContact.getNumber());
-//			contactsRepository.deleteContact(this.handyContact);
-//			
-//			context.sendBroadcast(intent);
-//			//Contact Receiver mit delete param und kontaktid param
-//		}
-//		
-//		else{
-//			
-//			myPreference.setSync();
-//			//Log.d(TAG, name);
-//			Log.d(TAG, "Else Klausel wird aufgerufen");
-//		}
+		}
+		
+		//Falls in der Reihenfolge nicht Funzt Zur Not wieder als letztes pruefen
+		else if(testDeleteOperation()){
+			
+			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
+			intent.putExtra("contactOperation", CONTACT_DELETED);
+			intent.putExtra("oldNumber", this.handyContact.getNumber());
+			contactsRepository.deleteContact(this.handyContact);
+			
+			context.sendBroadcast(intent);
+		}
+		
+		else if(testUpdateOperation()){
+			
+			ArrayList<Integer> contactIdListnew = new ArrayList<Integer>();
+			ArrayList<String> contactNumbers = new ArrayList<String>();
+			
+			Intent intent = new Intent(ContactReceiver.CONTACT_INTENT);
+			intent.putExtra("contactOperation", CONTACT_UPDATED);
+			
+			for(HandyContact hc : handyContacts){
+				
+				contactIdListnew.add(hc.getId());
+				contactNumbers.add(hc.getNumber());
+				contactsRepository.updateContact(hc);
+			}
+			
+			intent.putStringArrayListExtra("oldContactNumbers", contactNumbers);
+			intent.putIntegerArrayListExtra("contactIdList", contactIdListnew);
+			context.sendBroadcast(intent);
+		}
+		
+		// Eventuell auch mit mehreren Nummern machen wie bei 
+		
+		else{
+			
+			myPreference.setSync();
+			//Log.d(TAG, name);
+			Log.d(TAG, "Else Klausel wird aufgerufen");
+		}
 		
 
 	}
@@ -340,20 +334,4 @@ public class ContactObserver extends ContentObserver {
 		return check;
 	}
 	
-	private void debugFunction(){
-		
-		DbRosterRepository rep = new DbRosterRepository(context);
-		
-		List<RosterContact> test = rep.getAll();
-		
-		for(RosterContact rc : test){
-			
-			Log.d(TAG, "Username: "+rc.getUsername());
-			Log.d(TAG, "Jid: "+rc.getJid());
-		}
-		
-		
-	}
-	
-
 }

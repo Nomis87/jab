@@ -6,10 +6,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.poke.database.DbContactsRepository;
 import org.poke.database.DbRosterRepository;
 import org.poke.database.DbUserRepository;
-import org.poke.object.HandyContact;
-import org.poke.object.RosterContact;
 import org.poke.object.User;
-import org.poke.xmpp.RosterStorage;
+import org.poke.object.contact.HandyContact;
+import org.poke.object.contact.RosterContact;
+import org.poke.xmpp.XMPPRosterStorage;
 import org.poke.xmpp.XMPPConnectionHandler;
 
 import android.content.BroadcastReceiver;
@@ -35,7 +35,7 @@ public class ContactReceiver extends BroadcastReceiver {
 		
 		//XMPP Kram 
 		XMPPConnectionHandler handler = XMPPConnectionHandler.getInstance();
-		RosterStorage rs = new RosterStorage();
+		XMPPRosterStorage rs = new XMPPRosterStorage();
 		
 		int operation = intent.getIntExtra("contactOperation", 3);
 		

@@ -11,6 +11,8 @@
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -48,9 +50,14 @@
             android:name="org.poke.newPoke.NewPokeActivity"
             android:label="@string/title_activity_new_poke" >
         </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name="org.poke.newPoke.NewTimedPokeActivity">
+        </activity>
         <activity 
             android:name="org.poke.message.PokeMessageActivity"
-            android:theme="@style/Theme.Transparent">
+            android:theme="@style/Theme.Transparent"
+            android:configChanges="orientation">
         </activity>
         
 <!--         Hier befinden sich alle Services  -->
@@ -59,6 +66,12 @@
         </service>
         <service 
             android:name="org.poke.message.PokeMessageService">
+        </service>
+        <service 
+            android:name=".MainService">        
+        </service>
+        <service 
+            android:name="org.poke.xmpp.XMPPService">
         </service>
         
 <!--         Hier befinden sich alle Receiver -->
@@ -69,7 +82,28 @@
 		        <action android:name="org.poke.CONTACT_INTENT" />
 		    </intent-filter>		    
 		</receiver>
-        
+		<receiver 
+		    android:name="org.poke.message.PokeMessageReceiver"
+		    android:enabled="true">         
+		    <intent-filter>
+		        <action android:name="org.poke.POKEMESSAGE_INTENT" />
+		    </intent-filter>		    
+		</receiver>
+        <receiver 
+		    android:name="org.poke.message.SubscribeMessageReceiver"
+		    android:enabled="true">         
+		    <intent-filter>
+		        <action android:name="org.poke.SUBSCRIBEMESSAGE_INTENT" />
+		    </intent-filter>		    
+		</receiver>
+		<receiver 
+		    android:name="org.poke.message.timedSend.TimedMessageReceiver"
+		    android:enabled="true">		
+		    <intent-filter>
+		        <action android:name="org.poke.TIMED_MESSAGE_INTENT"/>
+		    </intent-filter>
+		</receiver>
+		
     </application>
 
 </manifest>

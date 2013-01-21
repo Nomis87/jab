@@ -1,21 +1,14 @@
 package org.poke.message;
 
-import org.jivesoftware.smack.RosterEntry;
 import org.poke.main.R;
-import org.poke.object.PokeMessage;
-import org.poke.object.RosterContact;
-import org.poke.util.ApplicationConstants;
-import org.poke.xmpp.RosterStorage;
+import org.poke.object.contact.RosterContact;
+import org.poke.object.message.IncomingMessage;
 import org.poke.xmpp.XMPPConnectionHandler;
+import org.poke.xmpp.XMPPRosterStorage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -26,11 +19,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * Activity welche zur Darstellung der Message dient.
+ * @author Tobias
+ *
+ */
 public class PokeMessageActivity extends Activity {
 	
-	private String pokeSender;
-	private String pokeSound;
-	private String pokeMessage;
+	private IncomingMessage message;
 	
 	private boolean pause = false;
 	
@@ -46,19 +42,22 @@ public class PokeMessageActivity extends Activity {
 		
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		
-		Bundle extras = getIntent().getExtras();
-		pokeSender = extras.getString("pokeSender");
-		pokeSound = extras.getString("pokeSound");
-		pokeMessage = extras.getString("pokeMessage");
 		
-		RosterStorage rs = new RosterStorage();
+		Bundle extras = getIntent().getExtras();
+		String pokeSender = extras.getString("pokeSender");
+		String pokeSound = extras.getString("pokeSound");
+		String pokeMessage = extras.getString("pokeMessage");
+		
+		XMPPRosterStorage rs = new XMPPRosterStorage();
 		
 		RosterContact rc = rs.getEntry(pokeSender.replace("/Smack", ""), XMPPConnectionHandler.getInstance().getConnection());
 		
-		if(rc != null){
+		
+		if(!rc.getUsername().equals("")){
 			pokeSender = rc.getUsername();
 		}
 		
+		message = new IncomingMessage(pokeSender, pokeSound, pokeMessage);
 		
 	}
 	
@@ -67,17 +66,17 @@ public class PokeMessageActivity extends Activity {
 		
 		super.onStart();
 		
-		if(!pokeSound.equals("") && !pause){
+		if(!message.getSound().equals("") && !pause){
 			
 			showDialog();
-			playSound(pokeSound);
+			playSound(message.getSound());
 		}
 	}
 	
 	
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
+		
 		super.onDestroy();
 	}
 	
@@ -91,47 +90,22 @@ public class PokeMessageActivity extends Activity {
 	}
 	
 	@SuppressLint("NewApi")
+	/**
+	 * Methode zum anzeigen des Dialogs
+	 */
 	private void showDialog(){
 		
 		
-		Log.d("help", pokeSender);
-		Log.d("help", pokeMessage);
-		
-//		FragmentManager fm = getFragmentManager();
-//		DialogFragment pokeDialog = new DialogFragment(){
-//			
-//			@Override
-//			public Dialog onCreateDialog(Bundle savedInstanceState) {
-//				
-//				AlertDialog.Builder builder = new AlertDialog.Builder(PokeMessageActivity.this);
-//				
-//				builder.setMessage("From: ["+pokeSender+"], Message: ["+pokeMessage+"]")
-//					.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-//						
-//						public void onClick(DialogInterface dialog, int which) {
-//							
-//							sp = null;
-//							PokeMessageActivity.this.finish();
-//						}
-//					});
-//				
-//				
-//				
-//				return builder.create();
-//			}
-//			
-//		};
-//		pokeDialog.show(fm, "Dialog");
-		
-		Dialog pokeDialog = new Dialog(PokeMessageActivity.this);
+		final Dialog pokeDialog = new Dialog(PokeMessageActivity.this);
 		
 		pokeDialog.setContentView(R.layout.poke_dialog);
+		pokeDialog.setCanceledOnTouchOutside(false);
 		
 		TextView sender = (TextView) pokeDialog.findViewById(R.id.receiveUserTextView);
-		sender.setText(pokeSender);
+		sender.setText(this.message.getSender());
 		
 		TextView message = (TextView) pokeDialog.findViewById(R.id.pokeMessageTextView);
-		message.setText(pokeMessage);
+		message.setText(this.message.getMessage());
 		
 		Button okButton = (Button) pokeDialog.findViewById(R.id.dialogOkButton);
 		
@@ -141,7 +115,8 @@ public class PokeMessageActivity extends Activity {
 			
 			public void onClick(View v) {
 				
-				PokeMessageActivity.this.finish();
+				pokeDialog.cancel();
+				closeActivity();
 			}
 		});
 		
@@ -149,6 +124,10 @@ public class PokeMessageActivity extends Activity {
 		
 	}
 	
+	/**
+	 * Methode zum abspielen des Sounds
+	 * @param sound Der Sound welcher abgespielt werden soll als String.
+	 */
 	private void playSound(String sound){
 		
 		sp= new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
@@ -159,6 +138,10 @@ public class PokeMessageActivity extends Activity {
 			
 			soundId = sp.load(this, R.raw.tor , 1);
 			Log.d("TOR", sound);
+		}
+		if(sound.equals("ps:klopf")){
+			
+			soundId = sp.load(this, R.raw.klopfsound, 1);
 		}
 		
 		if(soundId != null){
@@ -183,4 +166,10 @@ public class PokeMessageActivity extends Activity {
 			
 		}
 	}
+	
+	private void closeActivity(){
+		
+		this.finish();
+	}
+	
 }

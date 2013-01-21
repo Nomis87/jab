@@ -20,7 +20,7 @@ public class DbUserRepository extends DbRepository{
 	}
 
 	
-	public boolean createUser(String userId, String username, String password, String countryCode) {
+	public boolean createUser(User user) {
 		
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
@@ -28,10 +28,10 @@ public class DbUserRepository extends DbRepository{
 		
 		//Einfügen der Informationen
 		ContentValues userValues = new ContentValues();
-		userValues.put("us_id", userId);
-		userValues.put("us_username", username);
-		userValues.put("us_password", password);
-		userValues.put("us_countryCode", countryCode);
+		userValues.put("us_id", user.getUserId());
+		userValues.put("us_username", user.getUsername());
+		userValues.put("us_password", user.getPassword());
+		userValues.put("us_countryCode", user.getCountryCode());
 		db.insert(ApplicationConstants.DB_TABLE_USER, null, userValues);
 		
 		// Testen ob die datenbak erfolgreich erstellt wurde		
@@ -42,7 +42,7 @@ public class DbUserRepository extends DbRepository{
 		String testPassword = c.getString(c.getColumnIndex("us_password"));
 		
 		Log.d(TAG, testUsername);
-		if(testUserid.equals(userId)&&testUsername.equals(username)&&testPassword.equals(password)){
+		if(testUserid.equals(user.getUserId())&&testUsername.equals(user.getUsername())&&testPassword.equals(user.getPassword())){
 					
 			created = true;
 		}

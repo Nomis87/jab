@@ -2,18 +2,19 @@ package org.poke.xmpp;
 
 import java.util.HashMap;
 import java.util.Iterator;
-
+import java.util.List;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.Form;
@@ -43,33 +44,51 @@ import org.jivesoftware.smackx.provider.VCardProvider;
 import org.jivesoftware.smackx.provider.XHTMLExtensionProvider;
 import org.jivesoftware.smackx.search.UserSearch;
 import org.jivesoftware.smackx.search.UserSearchManager;
+import org.poke.database.DbOfflineMessagesRepository;
+import org.poke.helper.ConnectionState;
 import org.poke.helper.HelperFunctions;
 import org.poke.message.PokeMessageListener;
+import org.poke.message.SubscribeMessageListener;
+import org.poke.object.message.OutgoingMessage;
 import org.poke.util.ApplicationConstants;
+import org.poke.util.ApplicationContext;
 
-import android.content.Context;
 import android.util.Log;
 
+/**
+ * Singelton Klasse <br/>
+ * Stellt Methoden für die benoetigen XMPP funktionalitaeten zu Verfügung.
+ * 
+ * @author Tobias
+ *
+ */
 public class XMPPConnectionHandler {
-	
+		
 	private final String TAG = "XMPPConnectionHandler";
-	
+	private static XMPPConnectionHandler instance = null;
 	private XMPPConnection connection;
 	private ConnectionConfiguration config;
 	
-	private static XMPPConnectionHandler instance = null;
+	private PacketFilter pokeFilter;
+	private PacketListener pokeListener;
+	private PacketFilter subscribeFilter;
+	private PacketListener subscribeListener;
 	
 	
 	public XMPPConnection getConnection(){
 		
+		
 		return this.connection;
+		//addConnectionListener();
 	}
 	
-	public XMPPConnectionHandler(){
+	private XMPPConnectionHandler(){
 		
 		init_config();
 		init_providermanager(ProviderManager.getInstance());
 		init_connection();
+		//addConnectionListener(ApplicationContext.getInstance().getContext());
+		
 	}
 	
 	public static synchronized XMPPConnectionHandler getInstance(){
@@ -89,6 +108,8 @@ public class XMPPConnectionHandler {
 		this.config.setTruststorePassword("changeit");
 		this.config.setTruststoreType("bks");
 		
+		SmackConfiguration.setKeepAliveInterval(60000);
+		
 	}
 	
 	private void init_providermanager(ProviderManager pm){
@@ -100,14 +121,26 @@ public class XMPPConnectionHandler {
 	private void init_connection(){
 		
 		this.connection = new XMPPConnection(config);
+		
+		this.pokeFilter = new MessageTypeFilter(Message.Type.normal);
+		this.pokeListener = new PokeMessageListener();
+		
+		this.subscribeFilter  =  new MessageTypeFilter(Message.Type.error);
+		this.subscribeListener = new SubscribeMessageListener();
 	}
+
 	
-	
-	public void pokeMessageReceiver(){
+	public void setMessageReceiver(){
 		
 		Log.d(TAG, "Message Receiver wird aufgerufen");
-		PacketFilter filter = new MessageTypeFilter(Message.Type.normal);
-		connection.addPacketListener( new PokeMessageListener(), filter);
+		connection.addPacketListener( pokeListener, pokeFilter);
+		connection.addPacketListener(subscribeListener, subscribeFilter);
+	}
+	
+	public void removeMessageReceiver(){
+		
+		connection.addPacketListener( pokeListener, pokeFilter);
+		connection.addPacketListener(subscribeListener, subscribeFilter);
 	}
 	
 	public void createAccount(String userId, String username, String password ) throws XMPPException{
@@ -174,13 +207,11 @@ public class XMPPConnectionHandler {
 		return registered;
 	}
 	
-	public boolean sendPoke(String receiver, String sound, String pokeMessage){
+	public void sendSubscribeMessage(String receiver){
 		
-		 Log.i("XMPPClient", "Sending text [so_" + sound + " "+pokeMessage+"] to [" + receiver + "]");
 		 if(connection.isAuthenticated()){
 			 
-			 Message message = new Message(receiver, Message.Type.normal);
-			 message.setBody(sound+ApplicationConstants.SEPERATOR+pokeMessage);
+			 Message message = new Message(receiver, Message.Type.error);
 			 connection.sendPacket(message);
 			 
 			 ChatManager chatManager = connection.getChatManager();
@@ -188,6 +219,7 @@ public class XMPPConnectionHandler {
 			 
 			 try {
 				chat.sendMessage(message);
+				Log.i(TAG, "Sending subscribe [to [" + receiver + "]");
 			 } catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -200,28 +232,83 @@ public class XMPPConnectionHandler {
 			 Log.i(TAG, "Nich eingeloggt !!!!!!");
 		 }
 		
+	}
+	
+	public void handleOfflineMessages(){
+		
+		DbOfflineMessagesRepository offRepo = new DbOfflineMessagesRepository(ApplicationContext.getInstance().getContext());
+		
+		List<OutgoingMessage> messageList = offRepo.getAllOfflineMessages();
+		
+		if(messageList.size()>0){
+			
+			for(OutgoingMessage oMessage : messageList){
+				
+				if(ConnectionState.getInstance().isConnectionState()){
+					
+					sendPokeMessage(oMessage.getReceiver(), oMessage.getSound(), oMessage.getMessage());
+					offRepo.deleteOfflineMessage(oMessage);
+				}
+				else{
+					break;
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	public boolean sendPokeMessage(String receiver, String sound, String pokeMessage){
+		
+		if(ConnectionState.getInstance().isConnectionState()){
+			 Log.i("XMPPClient", "Sending text [so_" + sound + " "+pokeMessage+"] to [" + receiver + "]");
+			 if(connection.isAuthenticated()){
+				 
+				 Message message = new Message(receiver, Message.Type.normal);
+				 message.setBody(sound+ApplicationConstants.SEPERATOR+pokeMessage);
+					 
+			     connection.sendPacket(message);
+				
+				 
+			 }
+			 else{
+				 
+				 Log.i(TAG, "Nich eingeloggt !!!!!!");
+			 }
+		}
+		else{
+			
+			Log.i(TAG, "Sending Offline Message");
+			OutgoingMessage oMessage = new OutgoingMessage(receiver, sound, pokeMessage);
+			
+			DbOfflineMessagesRepository offRepo = new DbOfflineMessagesRepository(ApplicationContext.getInstance().getContext());
+			offRepo.createMessage(oMessage);
+		}
+		
 		
 		return false;
 	}
 	
-	public void sendAddedPackage(String receiver){
-		
-		if(connection.isAuthenticated()){
-			
-			Message message = new Message(receiver, Message.Type.error);
-			
-		}
-		
-	}
 	
 	public void login(String userId, String password) throws XMPPException{
 		
 		if(!connection.isConnected()){
-		
+			
+			if(!connection.isAuthenticated()){
+				
+				connection.connect();
+				SASLAuthentication.supportSASLMechanism("PLAIN", 0);
+				connection.login(userId, HelperFunctions.getInstance().saltPassword(password));
+			}	
+		}
+		else{
+			
+			connection.disconnect();
 			connection.connect();
 			SASLAuthentication.supportSASLMechanism("PLAIN", 0);
+			connection.login(userId, HelperFunctions.getInstance().saltPassword(password));		
 		}
-		connection.login(userId, HelperFunctions.getInstance().saltPassword(password));
 	}
 		
 	
@@ -229,6 +316,7 @@ public class XMPPConnectionHandler {
 		
 		connection.disconnect();
 	}
+	
 	
 	private void configure(ProviderManager pm) {
 

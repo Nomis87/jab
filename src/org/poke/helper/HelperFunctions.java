@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.poke.database.DbContactsRepository;
-import org.poke.object.HandyContact;
+import org.poke.object.contact.HandyContact;
 import org.poke.util.ApplicationConstants;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.RawContacts;
-import android.util.Log;
 
 /**
  * Singelton Class<br/>

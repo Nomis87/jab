@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.poke.main.R;
-import org.poke.main.R.layout;
-import org.poke.main.R.menu;
-import org.poke.object.RosterContact;
+import org.poke.object.contact.RosterContact;
 import org.poke.util.ApplicationConstants;
-import org.poke.xmpp.RosterStorage;
-import org.poke.xmpp.XMPPConnectionHandler;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -132,6 +127,7 @@ public class NewPokeActivity extends Activity {
     	
     	List<String> soundList = new ArrayList<String>();
     	soundList.add("TOR");
+    	soundList.add("KlopfKlopf");
     	
     	ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.receiver_spinner_layout, soundList);
     	
@@ -153,6 +149,11 @@ public class NewPokeActivity extends Activity {
 					sound = "ps:tor";
 				}
 				
+				if(parent.getItemAtPosition(pos).equals("KlopfKlopf")){
+					
+					sound = "ps:klopf";
+				}
+				
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -171,7 +172,7 @@ public class NewPokeActivity extends Activity {
 				
 				if(receiver!=null){
 					
-					SendPokeTask poke = new SendPokeTask(receiver, sound, pokeMessage.getText().toString());
+					SendPokeTask poke = new SendPokeTask(receiver.getJid(), sound, pokeMessage.getText().toString());
 					poke.execute();
 					NewPokeActivity.this.finish();
 				}
@@ -201,15 +202,6 @@ public class NewPokeActivity extends Activity {
     	}
     	c.close();
     	db.close();
-    	
-    }
-    
-    //Eine Methode welche nur zum Debuggen verwendet wird
-    private void getContactsFromServer(){
-    	
-    	RosterStorage rs = new RosterStorage();
-    	
-    	rosterContactList = rs.getEntries(XMPPConnectionHandler.getInstance().getConnection());
     	
     }
     

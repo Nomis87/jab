@@ -1,4 +1,4 @@
-package org.poke.object;
+package org.poke.object.contact;
 
 import org.poke.util.ApplicationConstants;
 

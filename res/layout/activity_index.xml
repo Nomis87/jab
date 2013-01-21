@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="@drawable/main_background">
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background" >
 	
     <LinearLayout 
         android:layout_width="match_parent"
@@ -67,54 +67,60 @@
         	android:paddingRight="1dp"
         	android:orientation="vertical"
         	android:layout_gravity="center">
+
+    		<TextView
+    		    android:id="@+id/textView1"
+    		    android:layout_width="wrap_content"
+    		    android:layout_height="wrap_content"
+    		    android:layout_marginLeft="10dp"
+    		    android:layout_marginTop="20dp"
+    		    android:text="Volume:"
+    		    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    		<SeekBar
+    		    android:id="@+id/volumeFader"
+    		    android:layout_width="match_parent"
+    		    android:layout_height="wrap_content"
+    		    android:layout_marginLeft="0dp"
+    		    android:layout_marginRight="0dp"
+    		    android:layout_marginTop="4dp"
+    		    android:background="#FFFFFF" />
         
         	<Button
-        		android:id="@+id/buttonMyPokes"
-        		style="?android:attr/buttonStyleSmall"
-        		android:layout_width="180dp"
-        		android:layout_height="wrap_content"
-        		android:layout_marginLeft="10dp"
-        		android:layout_marginTop="56dp"
-        		android:background="#161616"
-        		android:text="My Pokes" />
+        	    android:id="@+id/buttonMyPokes"
+        	    style="?android:attr/buttonStyleSmall"
+        	    android:layout_width="180dp"
+        	    android:layout_height="50dp"
+        	    android:layout_marginLeft="10dp"
+        	    android:layout_marginTop="20dp"
+        	    android:background="#161616"
+        	    android:textColor="#FFFFFF"
+        	    android:text="My Pokes" />
         		
         	<Button
         		android:id="@+id/buttonNewPoke"
         		style="?android:attr/buttonStyleSmall"
         		android:layout_width="180dp"
-        		android:layout_height="wrap_content"
+        		android:layout_height="50dp"
         		android:layout_marginLeft="10dp"
         		android:layout_marginTop="10dp"
         		android:background="#161616"
+        		android:textColor="#FFFFFF"
         		android:text="New Poke" />
         
         	<Button
         		android:id="@+id/buttonContactList"
         		style="?android:attr/buttonStyleSmall"
         		android:layout_width="180dp"
-        		android:layout_height="wrap_content"
+        		android:layout_height="50dp"
         		android:layout_marginLeft="10dp"
         		android:layout_marginTop="10dp"
+        		android:layout_marginBottom="10dp"
         		android:background="#161616"
-        		android:text="Contact List" />
+        		android:textColor="#FFFFFF"
+        		android:text="New Timed Poke" />
         
-        	<ToggleButton
-        		android:id="@+id/toggleButtonSetService"
-        		android:layout_width="180dp"
-        		android:layout_height="wrap_content"
-        		android:layout_marginLeft="10dp"
-        		android:layout_marginTop="10dp"
-        		android:layout_marginBottom="10dp"/>
         
-<!--         	<ToggleButton -->
-<!--         		android:id="@+id/toggleButtonSound" -->
-<!--         		style="?android:attr/buttonStyleSmall" -->
-<!--         		android:layout_width="180dp" -->
-<!--         		android:layout_height="wrap_content" -->
-<!--         		android:layout_marginLeft="10dp" -->
-<!--         		android:layout_marginTop="10dp" -->
-<!--         		android:layout_marginBottom="10dp" -->
-<!--         		android:background="#161616"/> -->
         
     	</LinearLayout>
 	</LinearLayout>
