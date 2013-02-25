@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/person_row_item_background"
+    android:layout_width="fill_parent"
+    android:layout_height="50dip" >
+    
+    <ImageView
+        android:id="@+id/image_contact_person"
+        android:layout_width="50dp"
+       	android:layout_height="50dp" 
+        android:src="@drawable/contact_person"/>
+    
+    <LinearLayout 
+        android:layout_height="fill_parent"
+       	android:layout_width="fill_parent"
+       	android:layout_toRightOf="@id/image_contact_person"
+       	android:orientation="vertical"
+       	android:paddingLeft="10sp">
+        
+        <TextView 
+            android:id="@+id/contact_person_name_view"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="22dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#cc0000"/>
+        
+    </LinearLayout>
+    
+    
+
+</RelativeLayout>

@@ -1,0 +1,40 @@
+TODO
+---- High Prio -----
+--------------------
+
+1~ Repositorys erstellen !!!! (Alle Datenbanbk Repositorys mit DBUtil abaenbdern) ##CHECKING##
+1~ Save User Account Informationen in SharedPreference ##DISCARDED##
+1~ Automatisches schließen der Services verhindern (vll mit WakeLock).  ##CHECKING##
+	-> Funktioniert nicht mit Wakelock ##FIND A SOLUTION##
+1~ Registrierung anpassen (Layout, Nummer anstatt länderkürzel) ##CHECKING##
+1~ Timed Message Nachrichten ueber mehr als 4 std werden nicht gesendet (vll wakeLock in Main Service)
+	-> (more then one Alarm)!!!!!
+1~ Subscribe Message richtig Implementieren
+1~ Received Notification Implementieren (wenn user Antwort oder schließen drückt receivedMessage Senden)
+1~ Contactlist sncronizer optimieren. (http://developer.android.com/guide/topics/providers/contacts-provider.html)
+	-> country COde Steht noch auf null 
+	-> in einen THREAD auslagern da ANR bei Broadcastreceiver nach 10 seconds.
+1~ MainService beim booten des Handys starten
+1~ ConnectionListener fuer die Verbindung zum Openfire Server implementieren.
+	if(connection==true){ ConnectionState.getInstance().SetConnectionState(true);
+	else{ ConnectionState.getInstance().SetConnectionState(false);
+1~ Message ReceiverQueue richtig Implementieren (Singelton oder so)
+1~ Erstellen von Gruppen ermöglichen
+1~ Telefonbuch Datenbank schon beim starten des first Starts erstellen !!!!
+
+
+---- Medium Prio -----
+----------------------
+
+2~ Design erstellen #### 60 %
+2~ Entscheiden ob home Screen gebraucht wird.
+2~ Merge Design_App with Backend_App
+
+
+---- Low Prio -----
+-------------------
+
+3~ LautlosButton
+3~ Dialog beim Setup das der Ton in der App lauer und leiser gestellt werden kann.
+3~ String.xml anpassen
+3~ Username in Preference Activity setzen (wenn user einen Username hat diesen anzeigen bzw in Roster Table Speichern !!!)

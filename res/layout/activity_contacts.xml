@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_index"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    
+    <LinearLayout 
+       android:layout_width="match_parent"
+    	android:layout_height="wrap_content" 
+    	android:orientation="vertical"
+    	android:layout_marginTop="10dp">
+        
+        <RelativeLayout
+       		android:layout_width="match_parent"
+    		android:layout_height="30dp"
+    		android:layout_marginLeft="5dp"
+    		android:layout_marginRight="5dp">
+         
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#181818"
+                android:textSize="22dp"
+                android:text="Gruppen"/>
+            
+            <Button
+                android:id="@+id/activity_contacts_addGroup_button"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/tabgroup_add_group" />
+        	
+    	</RelativeLayout>
+    	<LinearLayout 
+    	    android:layout_width="match_parent"
+    	    android:layout_height="3dp"
+    	    android:background="#CC0000"/>
+              
+    </LinearLayout>
+    
+    <LinearLayout 
+       android:layout_width="match_parent"
+    	android:layout_height="wrap_content" 
+    	android:orientation="vertical"
+    	android:layout_marginTop="40dp">
+        
+        <RelativeLayout
+       		android:layout_width="match_parent"
+    		android:layout_height="30dp"   		
+    		android:layout_marginLeft="5dp"
+    		android:layout_marginRight="5dp">
+         
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#181818"
+                android:textSize="22dp"
+                android:text="Personen"/>
+            
+        	
+    	</RelativeLayout>
+    	<LinearLayout 
+    	    android:layout_width="match_parent"
+    	    android:layout_height="3dp"
+    	    android:background="#669900"/>
+        
+    	<ListView 
+    	    android:id="@+id/activity_contacts_person_list"
+    	    android:layout_width="fill_parent"
+       		android:layout_height="fill_parent"
+       		android:paddingTop="10dp" >
+    	    
+    	</ListView>
+             
+    </LinearLayout>
+    
+
+</LinearLayout>
