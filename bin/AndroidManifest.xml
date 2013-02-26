@@ -41,9 +41,14 @@
             android:label="@string/title_activity_setup"
             android:screenOrientation="portrait" >
         </activity>
-         <activity
+        <activity
             android:name="org.jab.view.activity.SetupContactlistActivity"
-            android:label="@string/title_activity_setup_contactlist" 
+            android:label="@string/title_activity_setup_contactlist"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="org.jab.view.activity.UpdateActivity"
+            android:label="@string/title_activity_update" 
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -83,16 +88,15 @@
         </activity>
         <activity
             android:name="org.jab.view.activity.ReceivedMessageActivity"
-            android:theme="@style/mytransparent.windowNoTitle"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/mytransparent.windowNoTitle" >
         </activity>
+        
 
         <!-- Hier befinden sich alle Services -->
-        <service 
-            android:name="org.jab.control.main.MainService" >
+        <service android:name="org.jab.control.main.MainService" >
         </service>
-        <service 
-            android:name="org.jab.control.xmpp.XMPPService" >
+        <service android:name="org.jab.control.xmpp.XMPPService" >
         </service>
 
         <!-- Hier befinden sich alle Receiver -->

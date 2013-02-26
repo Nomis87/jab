@@ -27,7 +27,6 @@ public class XMPPService extends Service {
 	private boolean threadRunning;
 	private XMPPConnectionHandler handler;
 	private User user;
-	private PowerManager pm;
 	
 	
 	@Override
@@ -45,9 +44,6 @@ public class XMPPService extends Service {
 		
 		DbUserRepository userRepository = new DbUserRepository(this);
 		user = userRepository.readUser();
-		
-		this.pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 
 		
 		//Alle Registrierung von packetListener usw.

@@ -12,7 +12,7 @@ public class DBUtil {
 		
 		if(dbHelper == null){
 			
-			dbHelper = new DatabaseOpenHelper(context.getApplicationContext());
+			dbHelper = new DatabaseOpenHelper(context);
 		}
 		
 		return dbHelper;

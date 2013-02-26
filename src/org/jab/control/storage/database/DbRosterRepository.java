@@ -71,6 +71,7 @@ public class DbRosterRepository extends DbRepository {
         rosterContact.setJid(cursor.getString(0));
         rosterContact.setUsername(cursor.getString(1));
         
+        cursor.close();
         db.close();
         DBUtil.closeDatabaseOpenHelper();
         
@@ -96,7 +97,7 @@ public class DbRosterRepository extends DbRepository {
 	
 	public void deleteRosterEntry(RosterContact rc) {
 		
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		SQLiteDatabase db = DBUtil.getDatabaseOpenHelper(context).getWritableDatabase();
 
 		db.delete(ApplicationConstants.DB_TABLE_ROSTER, "ro_id"+" = ?", new String[] {rc.getJid()});
 
@@ -122,6 +123,7 @@ public class DbRosterRepository extends DbRepository {
 	    	while(c.moveToNext());
     	}
 		
+    	c.close();
     	db.close();
     	DBUtil.closeDatabaseOpenHelper();
     	

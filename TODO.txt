@@ -11,7 +11,7 @@ TODO
 	-> (more then one Alarm)!!!!!
 1~ Subscribe Message richtig Implementieren
 1~ Received Notification Implementieren (wenn user Antwort oder schließen drückt receivedMessage Senden)
-1~ Contactlist sncronizer optimieren. (http://developer.android.com/guide/topics/providers/contacts-provider.html)
+1~ Contactlist sncronizer optimieren. (http://developer.android.com/guide/topics/providers/contacts-provider.html) ##CHECKED## *the algo is to SLow*
 	-> country COde Steht noch auf null 
 	-> in einen THREAD auslagern da ANR bei Broadcastreceiver nach 10 seconds.
 1~ MainService beim booten des Handys starten

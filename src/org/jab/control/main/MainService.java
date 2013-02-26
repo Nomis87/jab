@@ -50,9 +50,7 @@ public class MainService extends Service{
 		xmppService = new Intent(this, XMPPService.class);
 		connectionState = ConnectionState.getInstance();
 		//Register ContactObserver
-		//afr.setAsync();
-		
-		
+		//afr.setAsync();	
 		ContactObserver co = new ContactObserver(new Handler(), getBaseContext());
 		getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, co);
 	

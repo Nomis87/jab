@@ -20,6 +20,27 @@ public class ApplicationPreference {
 	}
 	
 	/**
+     * setting up preferences storage
+     */
+     private void setUpPreference() {
+
+        mPrefs = context.getSharedPreferences("myAppPrefs", 0); //0 = mode private. only this app can read these preferences
+     }
+     
+     public void setContactObserverPref(boolean set){
+    	 
+    	SharedPreferences.Editor editor = mPrefs.edit();
+ 		editor.putBoolean("ContactObserver", set);
+ 		editor.commit();
+     }
+     
+     public boolean getContactObserverPref(){
+    	 
+    	 return mPrefs.getBoolean("ContactObserver", false); 
+     }
+     
+	
+	/**
 	 * Get if this is Async
 	 * @return returns false if this is asynchron 
 	 */
@@ -48,19 +69,25 @@ public class ApplicationPreference {
 		editor.commit();
 	}
 	
-	
-	//Die 2 können eventuell geloescht werden
-	public void setAccountService(){
+	public void incrementAsyncCounter(){
 		
-		SharedPreferences.Editor edit = mPrefs.edit();
-		edit.putBoolean("accountService", true);
-		edit.commit();
+		SharedPreferences.Editor editor = mPrefs.edit();
+		editor.putInt("syncCounterPref", mPrefs.getInt("syncCounterPref", 0)+1);
+		editor.commit();
 	}
 	
-	public boolean getAccountService(){
+	public int getAsyncCounter(){
 		
-		return mPrefs.getBoolean("accountService", false);
+		return mPrefs.getInt("syncCounterPref", 0);
 	}
+	
+	public void resetAsyncCounter(){
+		
+		SharedPreferences.Editor editor = mPrefs.edit();
+		editor.putInt("syncCounterPref", 0);
+		editor.commit();
+	}
+	
 	
 	 /**
      * get if this is the first run
@@ -81,13 +108,7 @@ public class ApplicationPreference {
      }
      
      
-     /**
-     * setting up preferences storage
-     */
-     private void setUpPreference() {
-
-        mPrefs = context.getSharedPreferences("myAppPrefs", 0); //0 = mode private. only this app can read these preferences
-     }
+     
 	
 	
 }

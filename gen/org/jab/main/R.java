@@ -28,40 +28,41 @@ public final class R {
         public static final int input_grey_shadow_repeat=0x7f02000a;
         public static final int input_spinner_country_not_selected=0x7f02000b;
         public static final int input_spinner_country_selected=0x7f02000c;
-        public static final int jab=0x7f02000d;
-        public static final int main_background=0x7f02000e;
-        public static final int received_message_bg=0x7f02000f;
-        public static final int received_message_play_button=0x7f020010;
-        public static final int reg_topbar_bg=0x7f020011;
-        public static final int reg_topbar_jab=0x7f020012;
-        public static final int seekbar_bg=0x7f020013;
-        public static final int seekbar_progress=0x7f020014;
-        public static final int seekbar_progress_bg=0x7f020015;
-        public static final int seekbar_stripe_bg=0x7f020016;
-        public static final int seekbar_thumb=0x7f020017;
-        public static final int spinner=0x7f020018;
-        public static final int tabgroup_add_group=0x7f020019;
-        public static final int tabgroup_blue_bar=0x7f02001a;
-        public static final int tabgroup_blue_bar_activated=0x7f02001b;
-        public static final int tabgroup_blue_bar_repeat=0x7f02001c;
-        public static final int tabgroup_blue_bar_repeat_activated=0x7f02001d;
-        public static final int tabgroup_contacts_button=0x7f02001e;
-        public static final int tabgroup_green_bar=0x7f02001f;
-        public static final int tabgroup_green_bar_activated=0x7f020020;
-        public static final int tabgroup_green_bar_repeat=0x7f020021;
-        public static final int tabgroup_green_bar_repeat_activated=0x7f020022;
-        public static final int tabgroup_history_button=0x7f020023;
-        public static final int tabgroup_red_bar=0x7f020024;
-        public static final int tabgroup_red_bar_activated=0x7f020025;
-        public static final int tabgroup_red_bar_repeat=0x7f020026;
-        public static final int tabgroup_red_bar_repeat_activated=0x7f020027;
-        public static final int tabgroup_sound_button=0x7f020028;
-        public static final int tabgroup_tab_background=0x7f020029;
-        public static final int tabgroup_time_overview_button=0x7f02002a;
-        public static final int tabgroup_yellow_bar=0x7f02002b;
-        public static final int tabgroup_yellow_bar_activated=0x7f02002c;
-        public static final int tabgroup_yellow_bar_repeat=0x7f02002d;
-        public static final int tabgroup_yellow_bar_repeat_activated=0x7f02002e;
+        public static final int j=0x7f02000d;
+        public static final int jab=0x7f02000e;
+        public static final int main_background=0x7f02000f;
+        public static final int received_message_bg=0x7f020010;
+        public static final int received_message_play_button=0x7f020011;
+        public static final int reg_topbar_bg=0x7f020012;
+        public static final int reg_topbar_jab=0x7f020013;
+        public static final int seekbar_bg=0x7f020014;
+        public static final int seekbar_progress=0x7f020015;
+        public static final int seekbar_progress_bg=0x7f020016;
+        public static final int seekbar_stripe_bg=0x7f020017;
+        public static final int seekbar_thumb=0x7f020018;
+        public static final int spinner=0x7f020019;
+        public static final int tabgroup_add_group=0x7f02001a;
+        public static final int tabgroup_blue_bar=0x7f02001b;
+        public static final int tabgroup_blue_bar_activated=0x7f02001c;
+        public static final int tabgroup_blue_bar_repeat=0x7f02001d;
+        public static final int tabgroup_blue_bar_repeat_activated=0x7f02001e;
+        public static final int tabgroup_contacts_button=0x7f02001f;
+        public static final int tabgroup_green_bar=0x7f020020;
+        public static final int tabgroup_green_bar_activated=0x7f020021;
+        public static final int tabgroup_green_bar_repeat=0x7f020022;
+        public static final int tabgroup_green_bar_repeat_activated=0x7f020023;
+        public static final int tabgroup_history_button=0x7f020024;
+        public static final int tabgroup_red_bar=0x7f020025;
+        public static final int tabgroup_red_bar_activated=0x7f020026;
+        public static final int tabgroup_red_bar_repeat=0x7f020027;
+        public static final int tabgroup_red_bar_repeat_activated=0x7f020028;
+        public static final int tabgroup_sound_button=0x7f020029;
+        public static final int tabgroup_tab_background=0x7f02002a;
+        public static final int tabgroup_time_overview_button=0x7f02002b;
+        public static final int tabgroup_yellow_bar=0x7f02002c;
+        public static final int tabgroup_yellow_bar_activated=0x7f02002d;
+        public static final int tabgroup_yellow_bar_repeat=0x7f02002e;
+        public static final int tabgroup_yellow_bar_repeat_activated=0x7f02002f;
     }
     public static final class id {
         public static final int AgbConfirmButton=0x7f090026;
@@ -135,10 +136,11 @@ public final class R {
         public static final int activity_setup_error=0x7f030007;
         public static final int activity_sounds=0x7f030008;
         public static final int activity_timed_message_overview=0x7f030009;
-        public static final int list_contact_person_row_item=0x7f03000a;
-        public static final int poke_dialog=0x7f03000b;
-        public static final int receiver_spinner_layout=0x7f03000c;
-        public static final int timed_message_item=0x7f03000d;
+        public static final int activity_update=0x7f03000a;
+        public static final int list_contact_person_row_item=0x7f03000b;
+        public static final int poke_dialog=0x7f03000c;
+        public static final int receiver_spinner_layout=0x7f03000d;
+        public static final int timed_message_item=0x7f03000e;
     }
     public static final class menu {
         public static final int activity_bootstrap=0x7f080000;
@@ -151,6 +153,7 @@ public final class R {
         public static final int activity_setup_error=0x7f080007;
         public static final int activity_sounds=0x7f080008;
         public static final int activity_timed_message_overview=0x7f080009;
+        public static final int activity_update=0x7f08000a;
     }
     public static final class raw {
         public static final int standard_klopfsound=0x7f050000;
@@ -172,6 +175,7 @@ public final class R {
         public static final int title_activity_setup_error=0x7f060009;
         public static final int title_activity_sounds=0x7f060008;
         public static final int title_activity_timed_message_overview=0x7f06000d;
+        public static final int title_activity_update=0x7f06000f;
     }
     public static final class style {
         public static final int AppTheme=0x7f070004;
