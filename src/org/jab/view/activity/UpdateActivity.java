@@ -104,56 +104,54 @@ public class UpdateActivity extends Activity {
     		
     		_init();
     		
-    		for(int i=0; i<=apf.getAsyncCounter(); i++){
     			
-    			// Bei Erstellen einenes Useres
-    			if(testCreateOperation() == true){
+    		// Bei Erstellen einenes Useres
+    		if(testCreateOperation() == true){
+    		
+    			Log.d(TAG, "Create wird aufgerufen");
+    		
+    		
+    			for(HandyContact hc : handyContacts){
     			
-    				Log.d(TAG, "Create wird aufgerufen");
-    			
-    			
-    				for(HandyContact hc : handyContacts){
+    				if(hc.getName() != null){
     				
-    					if(hc.getName() != null){
-    					
-    						contactRepository.saveContact(hc);
-    						createXmppContact(hc);
-    					}
-    				
+    					contactRepository.saveContact(hc);
+    					createXmppContact(hc);
     				}
     			
-    		
     			}
     		
-    			// BEim löschen eines Useres 
-    			else if(testDeleteOperation()){
-    			
-    				Log.d(TAG, "Delete wird aufgerufen");
-    			
-    				if(handyContact.getCountryCode()== null){
-    					handyContact.setCountryCode(user.getCountryCode());
-    				}
-    				contactRepository.deleteContact(this.handyContact);
-    				deleteXmppContact(handyContact.getCountryCode(), handyContact.getNumber());
+    		
+    		}
+    		
+    		// BEim löschen eines Useres 
+    		if(testDeleteOperation()){
+    		
+    			Log.d(TAG, "Delete wird aufgerufen");
+    		
+    			if(handyContact.getCountryCode()== null){
+    				handyContact.setCountryCode(user.getCountryCode());
+    			}
+    			contactRepository.deleteContact(this.handyContact);
+    			deleteXmppContact(handyContact.getCountryCode(), handyContact.getNumber());
 
+    		}
+    		
+    		//Beim ändern eines Useres
+    		if(testUpdateOperation()){
+    		
+    		
+    			for(HandyContact hc : handyContacts){
+    			
+    				updateXmppContact(hc);
+    				contactRepository.updateContact(hc);
     			}
     		
-    			//Beim ändern eines Useres
-    			else if(testUpdateOperation()){
-    			
-    			
-    				for(HandyContact hc : handyContacts){
-    				
-    					updateXmppContact(hc);
-    					contactRepository.updateContact(hc);
-    				}
-    			
 	
-    			}
-    			else {
-				
-   
-    			}
+    		}
+    		else {
+			
+    			Log.d(TAG, "Nothing happends");
     		}  
     		
     		return true;

@@ -64,10 +64,6 @@ public class MessageReceiver extends BroadcastReceiver {
 
 	}
 	
-	private void startMessageAsNotification(){
-		
-	}
-	
 	private void  startMessageActivity(String sender, String sound, String message){
 		
 		Intent pokeMessageActivity = new Intent(context, ReceivedMessageActivity.class);

@@ -49,6 +49,9 @@ public class BootstrapActivity extends Activity {
 				
 				Intent activityIntent = new Intent(this, UpdateActivity.class);
 				startActivity(activityIntent);
+				Intent serviceIntent = new Intent(this, MainService.class);
+				startService(serviceIntent);
+				
 				finish();
 				
 			}

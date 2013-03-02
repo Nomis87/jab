@@ -1,6 +1,7 @@
 package org.jab.view.activity;
 
 import org.jab.main.R;
+import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,7 +54,7 @@ public class IndexActivity extends Activity {
         TextView tv = (TextView) findViewById(R.id.main_headline);
         tv.setText("Home");
         
-        TabBuilder tb = new TabBuilder(this);
+        MainTabBuilder tb = new MainTabBuilder(this);
         tb.initTabs();	
     }
     

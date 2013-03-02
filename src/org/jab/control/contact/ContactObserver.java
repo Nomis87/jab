@@ -16,6 +16,10 @@ public class ContactObserver extends ContentObserver {
 	//Debug Tag
 	private final String TAG = "ContactObserver";
 	
+	private long lastTimeofCall = 0;
+	private long lastTimeofUpdate = 0;
+	private long threshold_time = 10000;
+	
 	ApplicationPreference myPreference;
 	
 	public ContactObserver(Handler handler, Context context) {
@@ -27,17 +31,19 @@ public class ContactObserver extends ContentObserver {
 	
 	@Override
 	public void onChange(boolean selfChange) {
-		
-		if(!myPreference.getContactObserverPref()){
 			
-			Log.d(TAG, "somthing changed");
-			myPreference.setAsync();
-			myPreference.incrementAsyncCounter();
-			myPreference.setContactObserverPref(true);
-		}
-		else{
-			myPreference.setContactObserverPref(false);
-		}
+		lastTimeofCall = System.currentTimeMillis();	
+
+        if(lastTimeofCall - lastTimeofUpdate > threshold_time){
+
+        	lastTimeofUpdate = System.currentTimeMillis();
+        }
+        else{
+        			
+    		Log.d(TAG, "somthing changed");
+    		myPreference.setAsync();
+ 
+        }
 			
 	}
 	

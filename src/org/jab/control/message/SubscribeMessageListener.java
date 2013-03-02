@@ -36,8 +36,6 @@ public class SubscribeMessageListener implements PacketListener {
 				}
 				
 			
-			//Hier muss noch der Nickname geprüft werden	
-			//rs.addEntry(message.getFrom(), nickname, connection)
 			}
 		}
 		

@@ -16,7 +16,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 			+ ApplicationConstants.DB_TABLE_CONTACTS
 			+ " (hc_id INTEGER PRIMARY KEY, hc_number VARCHAR, hc_name VARCHAR, hc_countryCode VARCHAR, hc_version INTEGER);";
 	
-	private String rosterTable = "CREATE TABLE IF NOT EXISTS"
+	private String rosterTable = "CREATE TABLE IF NOT EXISTS "
 			+ ApplicationConstants.DB_TABLE_ROSTER
 			+ " (ro_id VARCHAR PRIMARY KEY, ro_username VARCHAR);";
 	
@@ -62,8 +62,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 		db.execSQL(userTable);
 		db.execSQL(cotactsTable);
 		db.execSQL(rosterTable);
-		//db.execSQL(rosterGroupHelperTable);
-		//db.execSQL(rosterGroupTable);
+		db.execSQL(rosterGroupHelperTable);
+		db.execSQL(rosterGroupTable);
 		db.execSQL(offlineMessagesTable);
 		db.execSQL(timedMessagesTable);
 		db.execSQL(sendedMessagesTable);

@@ -80,7 +80,7 @@ public class SubscribeMessageReceiver extends BroadcastReceiver{
 		
 		//Add to Roster DB
 		DbRosterRepository rosterRepository = new DbRosterRepository(context);
-		if(rosterRepository.containsRosterEntry(rc)){
+		if(!rosterRepository.containsRosterEntry(rc)){
 			
 			rosterRepository.createRosterEntry(rc);
 		}

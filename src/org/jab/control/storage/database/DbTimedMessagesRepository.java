@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jab.control.util.ApplicationConstants;
-import org.jab.control.util.ApplicationContext;
 import org.jab.model.message.TimedOutgoingMessage;
 
 import android.content.ContentValues;

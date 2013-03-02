@@ -1,9 +1,10 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:fillViewport="true"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-<LinearLayout
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
@@ -174,19 +175,20 @@
 		</LinearLayout>
 		
 		<!-- Dies ist der Agb Akzeptieren Button-->
-		<Button
-            android:id="@+id/AgbConfirmButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="bottom"
-            android:background="#181818"
-            android:textSize="20dp"
-            android:layout_marginTop="40dp"
-            android:text="Weiter ->" />
 	
 		
 	</LinearLayout>
+	
+	<Button
+		android:id="@+id/AgbConfirmButton"
+		android:layout_width="match_parent"
+		android:layout_height="50dp"
+        android:background="#181818"
+        android:layout_alignParentBottom="true"
+		android:textSize="20dp"
+		android:layout_marginTop="40dp"
+		android:text="Weiter ->" />
 
 
-</LinearLayout>
+</RelativeLayout>
 </ScrollView>

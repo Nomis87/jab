@@ -3,32 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-   	
-    
-    <LinearLayout 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:orientation="vertical">
-              
+        android:orientation="vertical" >
+
         <LinearLayout
-        	android:id="@+id/konfigLayout"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:layout_gravity="center"
-        	android:layout_marginTop="25dp"
-        	android:orientation="vertical">
-        
-			<!-- Hier ist der Abschitt zum Auswählen des Landes-->
-			<TextView
-            	android:id="@+id/textViewReceiver"
-            	android:layout_width="wrap_content"
-            	android:layout_height="wrap_content"
-            	android:layout_marginTop="20dp"  	
-		    	android:layout_gravity="center"
-            	android:text="Empfänger:"
-            	android:textColor="#FFFFFF"
-            	android:textSize="20dp" />
+            android:id="@+id/konfigLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+
+            <!-- Hier ist der Abschitt zum Auswählen des Landes -->
+
+            <TextView
+                android:id="@+id/textViewReceiver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Empfänger:"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp" />
 		
 			<Spinner
 		    	android:id="@+id/receiverSpinner"

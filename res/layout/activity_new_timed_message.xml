@@ -1,0 +1,65 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <Spinner
+		android:id="@+id/tm_receiverSpinner"
+		android:layout_width="200dp"
+		android:layout_height="30dp"
+		android:layout_gravity="center"
+		android:layout_marginTop="2dp"
+		android:background="#FFFFFF"
+		android:popupBackground="#161616"
+		android:drawSelectorOnTop = "true"/>
+    
+    <Spinner
+		android:id="@+id/tm_soundSpinner"
+		android:layout_width="200dp"
+		android:layout_height="30dp"
+		android:layout_gravity="center"
+		android:layout_marginTop="5dp"
+		android:background="#FFFFFF"
+		android:drawSelectorOnTop = "true"/>
+    
+    <EditText
+		android:id="@+id/tm_pokeMessageEditText"
+		android:layout_width="200dp"
+		android:layout_height="100dp"
+		android:layout_marginTop="5dp"
+		android:maxLength="111"
+		android:layout_gravity="center"
+		android:ems="10"
+		android:paddingLeft="5dp"
+		android:paddingRight="5dp"
+		android:textColor="#000000"
+		android:gravity="top|left"
+		android:inputType="textMultiLine"
+        android:background="#FFFFFF">
+		<requestFocus/>
+	</EditText>
+
+    <DatePicker
+        android:id="@+id/tm_datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false" />
+
+    <TimePicker
+        android:id="@+id/tm_timePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <Button
+		android:id="@+id/tm_sendButton"
+		android:layout_width="100dp"
+		android:layout_height="35dp"
+		android:layout_gravity="center"
+		android:textSize="12dp"
+		android:layout_marginTop="30dp"
+		android:text="Senden" />
+
+</LinearLayout>
+</ScrollView>

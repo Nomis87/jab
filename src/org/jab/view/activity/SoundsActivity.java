@@ -1,6 +1,7 @@
 package org.jab.view.activity;
 
 import org.jab.main.R;
+import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -44,7 +45,7 @@ public class SoundsActivity extends Activity {
         LinearLayout lyRight = (LinearLayout) findViewById(R.id.right_green_bar_button_layout);
         lyRight.setBackgroundResource(R.drawable.tabgroup_green_bar_repeat_activated);
         
-        TabBuilder tb = new TabBuilder(this);
+        MainTabBuilder tb = new MainTabBuilder(this);
         tb.initTabs();	
     }
 }

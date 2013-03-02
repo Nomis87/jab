@@ -1,6 +1,13 @@
-package org.jab.view.activity;
+package org.jab.view.tabBuilder;
 
 import org.jab.main.R;
+import org.jab.view.activity.ContactsActivity;
+import org.jab.view.activity.HistoryActivity;
+import org.jab.view.activity.IndexActivity;
+import org.jab.view.activity.NewInstantMessageActivity;
+import org.jab.view.activity.NewMessageMainActivity;
+import org.jab.view.activity.SoundsActivity;
+import org.jab.view.activity.TimedMessageOverviewActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class TabBuilder {
+public class MainTabBuilder {
 	
 	private Activity activity;
 	private Button homeButton;
@@ -18,7 +25,7 @@ public class TabBuilder {
 	private Button soundsButton;
 	private Button timedMessagesButton;
 	
-	public TabBuilder(Activity activity){
+	public MainTabBuilder(Activity activity){
 		
 		this.activity = activity;
 	}
@@ -62,7 +69,7 @@ public class TabBuilder {
 			
 			public void onClick(View v) {
 				
-				Intent intent = new Intent(activity.getBaseContext(), NewMessageActivity.class);
+				Intent intent = new Intent(activity.getBaseContext(), NewInstantMessageActivity.class);
 				activity.startActivity(intent);
 			}
 		});

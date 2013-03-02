@@ -56,7 +56,6 @@
         android:layout_height="fill_parent"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="60dp"
-        android:orientation="vertical"
         android:background="@drawable/main_background"
         android:id="@+id/main_layout">
 

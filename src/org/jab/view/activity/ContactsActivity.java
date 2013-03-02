@@ -7,6 +7,7 @@ import org.jab.control.storage.database.DbRosterRepository;
 import org.jab.main.R;
 import org.jab.model.contact.RosterContact;
 import org.jab.view.list.PersonListAdapter;
+import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -71,7 +72,7 @@ public class ContactsActivity extends Activity {
         LinearLayout lyRight = (LinearLayout) findViewById(R.id.right_red_bar_button_layout);
         lyRight.setBackgroundResource(R.drawable.tabgroup_red_bar_repeat_activated);
         
-        TabBuilder tb = new TabBuilder(this);
+        MainTabBuilder tb = new MainTabBuilder(this);
         tb.initTabs();
     }
     
@@ -135,7 +136,7 @@ public class ContactsActivity extends Activity {
 				
 				RosterContact rc = (RosterContact) parent.getAdapter().getItem(position);
 				
-				Intent intent = new Intent(context, NewMessageActivity.class);
+				Intent intent = new Intent(context, NewMessageMainActivity.class);
 				intent.putExtra("userId", rc.getJid());
 				
 				context.startActivity(intent);

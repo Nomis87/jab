@@ -7,8 +7,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.sax.StartElementListener;
-import android.util.Log;
 
 /**
  * Singelton Klasse.
@@ -19,12 +17,9 @@ import android.util.Log;
  */
 public class TimedAlarmManager {
 	
-	private static TimedAlarmManager instance = null;
 	private final String TAG = "TimedAlarmManager";
+	private static TimedAlarmManager instance = null;
 	private AlarmManager am;
-	private Long aktTimeToSend;
-	private Integer  aktMessageId;
-	
 	private PendingIntent pi;
 	
 	private TimedAlarmManager(){}
@@ -45,25 +40,6 @@ public class TimedAlarmManager {
 		
 		return instance;
 	}
-	
-	
-	
-	//Getter and Setters
-	public Long getAktTimeToSend() {
-		return aktTimeToSend;
-	}
-
-	public void setAktTimeToSend(Long aktTimeToSend) {
-		this.aktTimeToSend = aktTimeToSend;
-	}
-
-	public Integer getAktMessageId() {
-		return aktMessageId;
-	}
-
-	public void setAktMessageId(Integer aktMessageId) {
-		this.aktMessageId = aktMessageId;
-	}
 
 	
 	/**
@@ -77,67 +53,28 @@ public class TimedAlarmManager {
 	 */
 	public void setTimeToSendTimer(Context context, TimedOutgoingMessage message, boolean isSaved){
 		
-		if(aktTimeToSend == null && aktMessageId==null){
 			
-			aktTimeToSend = message.getTimeToSend();
-			if(!isSaved){
-				aktMessageId = saveInDb(context, message);
-			}
-			
-			
-			am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-			Intent intent = new Intent(TimedMessageReceiver.TIMED_MESSAGE_INTENT);
-			pi = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
-			am.set(AlarmManager.RTC_WAKEUP, message.getTimeToSend(), pi);
-			
-			Log.d(TAG, "akt = null");
-			Log.d(TAG, "Receiver: "+message.getReceiver());
-			Log.d(TAG, "Message: "+message.getMessage());
-		}
-		else if(aktTimeToSend > message.getTimeToSend()){
-			
-			aktTimeToSend = message.getTimeToSend();
-			aktMessageId = saveInDb(context, message);
-			
-			Log.d(TAG, "akt > message");
-			Log.d(TAG, "Receiver: "+message.getReceiver());
-			Log.d(TAG, "Message: "+message.getMessage());
-			Intent intent = new Intent(TimedMessageReceiver.TIMED_MESSAGE_INTENT);
-			pi = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
-			am.set(AlarmManager.RTC_WAKEUP, message.getTimeToSend(), pi);
-			 
-		}
-		else{
-			
-			saveInDb(context.getApplicationContext(), message);
-		}
+		DbTimedMessagesRepository tmRepo = new DbTimedMessagesRepository(context);
+		int messageId = tmRepo.createTimedMessage(message);	
 		
+		am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(TimedMessageReceiver.TIMED_MESSAGE_INTENT);
+		intent.putExtra("messageId", messageId);
+		pi = PendingIntent.getBroadcast(context, messageId, intent, PendingIntent.FLAG_ONE_SHOT);
+		am.set(AlarmManager.RTC_WAKEUP, message.getTimeToSend(), pi);	
 	}
 	
-	/**
-	 * Speichert eine Timednachricht über dessen Repository in die Datenbank.
-	 * @param context Context
-	 * @param message TimedOutgoingMessage
-	 * @return
-	 */
-	private int saveInDb(Context context, TimedOutgoingMessage message){
+	public void deleteTimer(Context context, TimedOutgoingMessage message){
 		
 		DbTimedMessagesRepository tmRepo = new DbTimedMessagesRepository(context);
+		tmRepo.deleteTimedMessage(message);
 		
-		return tmRepo.createTimedMessage(message);
-	}
-	
-	public void deleteTimedMessage(Context context, TimedOutgoingMessage message){
-		
-		
-	}
-	
-	/**
-	 * Stop 
-	 */
-	public void stopManager(){
-		
+		am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(TimedMessageReceiver.TIMED_MESSAGE_INTENT);
+		intent.putExtra("messageId", message.getId());
+		pi = PendingIntent.getBroadcast(context, message.getId(), intent, PendingIntent.FLAG_ONE_SHOT);
 		am.cancel(pi);
+		
 	}
 
 }

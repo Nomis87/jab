@@ -52,7 +52,7 @@ public class MainService extends Service{
 		//Register ContactObserver
 		//afr.setAsync();	
 		ContactObserver co = new ContactObserver(new Handler(), getBaseContext());
-		getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, co);
+		getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, false, co);
 	
 
 	}
