@@ -5,21 +5,35 @@ import java.util.List;
 
 public class RosterContactGroup {
 	
-	private List<RosterContact> rosterContactGroup;
+	private String groupName;
+	private List<RosterContact> groupContacts;
 	
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
 	public RosterContactGroup(List<RosterContact> rosterContactGroup) {
 		
-		this.rosterContactGroup = rosterContactGroup;
+		this.groupContacts = rosterContactGroup;
 	}
 	
 	public RosterContactGroup() {
 		
-		this.rosterContactGroup = new ArrayList<RosterContact>();
+		this.groupContacts = new ArrayList<RosterContact>();
 	}
 	
 	public void addRosterContact(RosterContact rc){
 		
-		rosterContactGroup.add(rc);
+		groupContacts.add(rc);
+	}
+	
+	public List<RosterContact> getGroupContacts(){
+		
+		return this.groupContacts;
 	}
 
 }

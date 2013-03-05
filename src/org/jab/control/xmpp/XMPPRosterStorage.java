@@ -2,15 +2,19 @@ package org.jab.control.xmpp;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.jab.model.contact.RosterContact;
+import org.jab.model.contact.RosterContactGroup;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.packet.Presence;
 
+import android.content.BroadcastReceiver;
 import android.util.Log;
 
 /**
@@ -240,6 +244,26 @@ public class XMPPRosterStorage {
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public void addGroup(RosterContactGroup group, XMPPConnection connection){
+		
+		if((connection!=null)&&(connection.isAuthenticated())){
+			Roster roster = connection.getRoster();
+			roster.createGroup(group.getGroupName());
+			
+			for(RosterContact rc : group.getGroupContacts()){
+				
+				RosterEntry re = roster.getEntry(rc.getJid());
+				try {
+					roster.getGroup(group.getGroupName()).addEntry(re);
+				} catch (XMPPException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

@@ -30,6 +30,7 @@ public class ReceivedMessageActivity extends Activity {
 	private TextView fromView;
 	private Button playSoundButton;
 	private TextView messageView;
+	private Button close;
 	
 	private SoundPool sp;
 	private Integer soundId;
@@ -67,6 +68,8 @@ public class ReceivedMessageActivity extends Activity {
 		playSoundButtonListener(pokeSound);
 		this.messageView = (TextView) findViewById(R.id.activity_received_message_message_view);
 		this.messageView.setText(pokeMessage);
+		this.close = (Button) findViewById(R.id.activity_received_message_close_button);
+		closeButtonListener();
 		
 
 	}
@@ -146,6 +149,18 @@ public class ReceivedMessageActivity extends Activity {
 			
 			
 		}
+	}
+	
+	private void closeButtonListener(){
+		
+		this.close.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				
+				closeActivity();
+			}
+		});
+		
 	}
 	
 	private void closeActivity(){

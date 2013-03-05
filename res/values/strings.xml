@@ -17,5 +17,6 @@
     <string name="title_activity_setup_contactlist">SetupContactlistActivity</string>
     <string name="title_activity_update">UpdateActivity</string>
     <string name="title_activity_new_timed_message">NewTimedMessageActivity</string>
+    <string name="title_activity_create_group">CreateGroupActivity</string>
 
 </resources>

@@ -27,7 +27,7 @@ import android.util.Log;
 public class MainService extends Service{
 	
 
-	private final String TAG = "XMPPConnectionService";
+	private final String TAG = "MainService";
 	
 	private boolean xmppServiceStarted = false;
 	private Intent xmppService;

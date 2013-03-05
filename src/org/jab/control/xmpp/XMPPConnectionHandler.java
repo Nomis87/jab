@@ -1,6 +1,5 @@
 package org.jab.control.xmpp;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,17 +7,17 @@ import org.jab.control.message.MessageListener;
 import org.jab.control.message.SubscribeMessageListener;
 import org.jab.control.storage.database.DbOfflineMessagesRepository;
 import org.jab.control.util.ApplicationConstants;
-import org.jab.control.util.ApplicationContext;
 import org.jab.control.util.ConnectionState;
 import org.jab.control.util.HelperFunctions;
-import org.jab.model.contact.RosterContactGroup;
+import org.jab.control.xmpp.ping.PingFilter;
+import org.jab.control.xmpp.ping.PingListener;
 import org.jab.model.message.OutgoingMessage;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.RosterGroup;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
@@ -39,6 +38,7 @@ import org.jivesoftware.smackx.packet.LastActivity;
 import org.jivesoftware.smackx.packet.OfflineMessageInfo;
 import org.jivesoftware.smackx.packet.OfflineMessageRequest;
 import org.jivesoftware.smackx.packet.SharedGroupsInfo;
+import org.jivesoftware.smackx.ping.provider.PingProvider;
 import org.jivesoftware.smackx.provider.AdHocCommandDataProvider;
 import org.jivesoftware.smackx.provider.DataFormProvider;
 import org.jivesoftware.smackx.provider.DelayInformationProvider;
@@ -77,6 +77,8 @@ public class XMPPConnectionHandler {
 	private PacketListener jabListener;
 	private PacketFilter subscribeFilter;
 	private PacketListener subscribeListener;
+	private PacketFilter pingFilter;
+	private PacketListener pingListener;
 	
 	
 	public XMPPConnection getConnection(){
@@ -125,12 +127,14 @@ public class XMPPConnectionHandler {
 	private void init_connection(){
 		
 		this.connection = new XMPPConnection(config);
-		
 		this.jabFilter = new MessageTypeFilter(Message.Type.normal);
 		this.jabListener = new MessageListener();
 		
 		this.subscribeFilter  =  new MessageTypeFilter(Message.Type.error);
 		this.subscribeListener = new SubscribeMessageListener();
+		
+		this.pingFilter = new PingFilter();
+		this.pingListener = new PingListener();
 	}
 
 	
@@ -138,12 +142,14 @@ public class XMPPConnectionHandler {
 		
 		connection.addPacketListener( jabListener, jabFilter);
 		connection.addPacketListener(subscribeListener, subscribeFilter);
+		connection.addPacketListener(pingListener, pingFilter);
 	}
 	
 	public void removeMessageReceiver(){
 		
-		connection.addPacketListener( jabListener, jabFilter);
-		connection.addPacketListener(subscribeListener, subscribeFilter);
+		connection.removePacketListener( jabListener);
+		connection.removePacketListener(subscribeListener);
+		connection.removePacketListener(pingListener);
 	}
 	
 	
@@ -437,7 +443,10 @@ public class XMPPConnectionHandler {
 		pm.addIQProvider("si","http://jabber.org/protocol/si", new StreamInitiationProvider());
 	
 		pm.addIQProvider("query","http://jabber.org/protocol/bytestreams", new BytestreamsProvider());
-	
+		
+		// add XMPP Ping (XEP-0199)
+		pm.addIQProvider("ping","urn:xmpp:ping", new PingProvider());
+		
 		//  Privacy
 		pm.addIQProvider("query","jabber:iq:privacy", new PrivacyProvider());
 		pm.addIQProvider("command", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider());
@@ -446,7 +455,9 @@ public class XMPPConnectionHandler {
 		pm.addExtensionProvider("bad-payload", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider.BadPayloadError());
 		pm.addExtensionProvider("bad-sessionid", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider.BadSessionIDError());
 		pm.addExtensionProvider("session-expired", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider.SessionExpiredError());
-
+		
 	}
+	
+	
 	
 }

@@ -59,9 +59,15 @@ public class BootstrapActivity extends Activity {
 				
 				Log.d("Run", "This is not the first run");
 				Intent activityIntent = new Intent(this, IndexActivity.class);	
-				//Main Service
-				Intent serviceIntent = new Intent(this, MainService.class);
-				startService(serviceIntent);
+				//Main Service in a Thread
+				Thread t = new Thread(){
+					
+					public void run() {
+						Intent service = new Intent(getBaseContext(), MainService.class);
+						getApplicationContext().startService(service);
+					};
+				};
+				t.start();
 				startActivity(activityIntent);
 				finish();
 				

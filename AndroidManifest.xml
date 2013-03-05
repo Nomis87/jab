@@ -32,11 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="org.jab.control.message.SendMessageActivity" >
+        <activity android:name="org.jab.control.message.SendMessageActivity" >
         </activity>
-        <activity
-            android:name="org.jab.control.message.timedSend.SendTimedMessageActivity" >
+        <activity android:name="org.jab.control.message.timedSend.SendTimedMessageActivity" >
         </activity>
         <!-- View Activitys -->
         <activity
@@ -95,13 +93,17 @@
         </activity>
         <activity
             android:name="org.jab.view.activity.NewTimedMessageActivity"
-            android:label="@string/title_activity_new_timed_message" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_new_timed_message"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="org.jab.view.activity.ReceivedMessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/mytransparent.windowNoTitle" >
+        </activity>
+        <activity
+            android:name="org.jab.view.activity.CreateGroupActivity"
+            android:label="@string/title_activity_create_group" >
         </activity>
 
         <!-- Hier befinden sich alle Services -->
@@ -111,7 +113,8 @@
         </service>
 
         <!-- Hier befinden sich alle Receiver -->
-        <receiver android:name="org.jab.control.contact.ContactReceiver" >
+        <receiver 
+            android:name="org.jab.control.contact.ContactReceiver" >
             <intent-filter>
                 <action android:name="org.jab.CONTACT_INTENT" />
             </intent-filter>
@@ -137,7 +140,6 @@
                 <action android:name="org.jab.TIMED_MESSAGE_INTENT" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
