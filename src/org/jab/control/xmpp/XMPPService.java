@@ -35,6 +35,8 @@ public class XMPPService extends Service {
 	
 	private final String TAG = "XMPPService";
 	
+	public static boolean XMPPServiceStatus = false;
+	
 	private static final String RECONNECT_ALARM = "org.yaxim.androidclient.RECONNECT_ALARM";
 	private Intent mAlarmIntent = new Intent(RECONNECT_ALARM);
 	private PendingIntent mPAlarmIntent;
@@ -54,6 +56,8 @@ public class XMPPService extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();	
 		
+		XMPPServiceStatus = true;
+		
 		handler = XMPPConnectionHandler.getInstance();	
 		DbUserRepository userRepository = new DbUserRepository(this);
 		user = userRepository.readUser();
@@ -61,33 +65,32 @@ public class XMPPService extends Service {
 		
 		mPAlarmIntent = PendingIntent.getBroadcast(this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		registerReceiver(mAlarmReceiver, new IntentFilter(RECONNECT_ALARM));
-
-	}
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		Log.d(TAG, "Service Wird aufgerufen!!!!");
 		
 		//Alle Message Receiver registrieren
 		handler.setMessageReceiver();
+		connectWithThread();
 		
-		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60000, mPAlarmIntent);
+//		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15000, mPAlarmIntent);
 		
-		return super.onStartCommand(intent, flags, startId);
 	}
+	
 	
 	@Override
 	public void onDestroy() {
 		
 		// Wenn Service beendet wird, wird auch der Thread beendet!!!
-		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		am.cancel(mPAlarmIntent);
-		unregisterReceiver(mAlarmReceiver);
-		handler.removeMessageReceiver();
-		handler.disconect();
+		Log.d(TAG, "Sevice wird destroyed");
 		
+//		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//		am.cancel(mPAlarmIntent);
+		unregisterReceiver(mAlarmReceiver);
+		handler.disconect();
+		handler.removeMessageReceiver();
+		
+		XMPPServiceStatus = false;;
 		super.onDestroy();
 	}
 	
@@ -107,8 +110,9 @@ public class XMPPService extends Service {
 					intent.putExtra("receiver", oMessage.getReceiver());
 					intent.putExtra("sound", oMessage.getSound());
 					intent.putExtra("message", oMessage.getMessage());
-					
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 					startActivity(intent);
+					offRepo.deleteMessage(oMessage);
 				}
 				else{
 					break;
@@ -126,8 +130,9 @@ public class XMPPService extends Service {
 		public void onReceive(Context ctx, Intent i) {
 			
 			Log.d(TAG, TAG+" wird aufgerufen");
-			
-			if (handler.getConnection().isConnected()) {
+			Log.d(TAG, "isCOnnected: "+handler.getConnection().isConnected());
+			Log.d(TAG, TAG+" "+handler.getConnection().isAuthenticated());
+			if (handler.getConnection().isAuthenticated()) {
 				return;
 			}
 			
@@ -146,34 +151,25 @@ public class XMPPService extends Service {
 			public void run() {
 				
 					
-					//Testen ob verbindung zum server besteht!!
-//					if(handler.getConnection().isConnected()){
-						Log.d(TAG, "Thread laeuft !!");
-						if(!handler.getConnection().isAuthenticated()){
-							
-							try {
-								Log.d(TAG, "Neu Einloggen");
-								handler.disconect();
-								handler.login(user.getUserId(), user.getPassword());
-								handleOfflineMessages();
-
-							} catch (XMPPException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						else{
-							Log.d(TAG, "Verbindung besteht");
-						}
-						
-//				}
-//					else{
-//						
-//						//No ServerConnection Intent senden TODO BroadcastReceiver welcher diesen Intent verarbeitet.
-//						//oder hier direkt verarbeite ....??
-//					}
+				Log.d(TAG, "Thread laeuft !!");
+				if(!handler.getConnection().isAuthenticated()){
 					
+					try {
+						Log.d(TAG, "Neu Einloggen");
+						handler.getConnection().connect();
+						handler.login(user.getUserId(), user.getPassword());
+						handleOfflineMessages();
+
+					} catch (XMPPException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+				else{
+					Log.d(TAG, "Verbindung besteht");
+				}
+					
+			}
 				
 		};
 		

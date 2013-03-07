@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.ContactsContract;
@@ -28,8 +29,7 @@ public class MainService extends Service{
 	
 
 	private final String TAG = "MainService";
-	
-	private boolean xmppServiceStarted = false;
+
 	private Intent xmppService;
 	private ConnectionState connectionState;
 	
@@ -66,35 +66,14 @@ public class MainService extends Service{
 		//orientieren.
 		BroadcastReceiver internetReceiver = new BroadcastReceiver() {
 			
+			
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				
 				
-				
-				if(intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)){
-					
-					Log.d(TAG, "Connection FALSE");
-					if(xmppServiceStarted){
-						Log.d(TAG, "XmppService wird gestoppt");
-						// Stopt den XmppService wenn keine Verbindung besteht
-						stopXmppService();
-						xmppServiceStarted = false;
-						connectionState.setConnectionState(false);
-						
-					}
-				}
-				else{
-					
-					Log.d(TAG, "Connection TRUE");
-					if(!xmppServiceStarted){
-						Log.d(TAG, "XmppService wird gestartet");
-						//Startet wenn eine Verbindung besteht
-						startXmppService();
-						xmppServiceStarted = true;
-						connectionState.setConnectionState(true);
-					
-					}
-				}
+				stopXmppService();
+				startXmppService();
+
 				
 			}
 		};	
@@ -105,7 +84,30 @@ public class MainService extends Service{
 	
 	private void startXmppService(){
 		
-		startService(xmppService);
+		Runnable t = new Runnable() {
+			
+			public void run() {
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				if(isInternetOn() && !XMPPService.XMPPServiceStatus){
+					
+					Log.d(TAG, "Connection TRUE");
+					Log.d(TAG, "XmppService wird gestartet");
+					//Startet wenn eine Verbindung besteht
+					startService(xmppService);
+					connectionState.setConnectionState(true);
+				}
+			}
+		};
+		Thread waitThread = new Thread(t);
+		waitThread.start();
+		
 	}
 	
 	private void stopXmppService(){
@@ -113,5 +115,23 @@ public class MainService extends Service{
 		stopService(xmppService);
 	}
 	
-	
+	public final boolean isInternetOn() {
+		 
+		 ConnectivityManager connec =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+		 // ARE WE CONNECTED TO THE NET
+		 if ( connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED ||
+				 connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTING ||
+				 connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTING ||
+				 connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED ) {
+		 // MESSAGE TO SCREEN FOR TESTING (IF REQ)
+		 //Toast.makeText(this, connectionType + ” connected”, Toast.LENGTH_SHORT).show();
+		 return true;
+		 
+		 } else if ( connec.getNetworkInfo(0).getState() == NetworkInfo.State.DISCONNECTED ||  connec.getNetworkInfo(1).getState() == NetworkInfo.State.DISCONNECTED  ) {
+		 //System.out.println(“Not Connected”);
+		 return false;
+		 }
+		 
+		 return false;
+	 }
 }

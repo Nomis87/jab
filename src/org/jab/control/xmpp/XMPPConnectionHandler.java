@@ -24,6 +24,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -114,7 +116,7 @@ public class XMPPConnectionHandler {
 		this.config.setTruststorePassword("changeit");
 		this.config.setTruststoreType("bks");
 		
-		SmackConfiguration.setKeepAliveInterval(60000);
+		//SmackConfiguration.setKeepAliveInterval(60000);
 		
 	}
 	
@@ -334,22 +336,14 @@ public class XMPPConnectionHandler {
 	
 	public void login(String userId, String password) throws XMPPException{
 		
-		if(!connection.isConnected()){
-			
-			if(!connection.isAuthenticated()){			
-				
-				connection.connect();
-				SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-				connection.login(userId, HelperFunctions.getInstance().saltPassword(password));
-			}	
-		}
-		else{
-			
-			connection.disconnect();
+		if(!connection.isConnected())
 			connection.connect();
+			
+		if(!connection.isAuthenticated()){			
+				
 			SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-			connection.login(userId, HelperFunctions.getInstance().saltPassword(password));		
-		}
+			connection.login(userId, HelperFunctions.getInstance().saltPassword(password));
+		}	
 	}
 		
 	
