@@ -18,7 +18,6 @@ import android.widget.Button;
 public class MainTabBuilder {
 	
 	private Activity activity;
-	private Button homeButton;
 	private Button newMessageButton;
 	private Button contactsButton;
 	private Button historyButton;
@@ -32,8 +31,6 @@ public class MainTabBuilder {
 	
 	public void initTabs(){
 		
-		this.homeButton = (Button) activity.findViewById(R.id.tabButtonHome);
-    	homeButtonListener();
     	this.newMessageButton = (Button) activity.findViewById(R.id.tabButtonNewMessage);
     	newMessageButtonListener();
     	this.contactsButton = (Button) activity.findViewById(R.id.tabButtonContacts);
@@ -47,21 +44,6 @@ public class MainTabBuilder {
 		
 	}
 	
-	
-	
-	private void homeButtonListener(){
-    	
-    	this.homeButton.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				
-				Intent intent = new Intent(activity.getBaseContext(), IndexActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				activity.startActivity(intent);
-			}
-		});
-    	
-    }
     
     private void newMessageButtonListener(){
     	

@@ -1,16 +1,19 @@
 package org.jab.view.activity;
 
 import org.jab.main.R;
+import org.jab.view.tabBuilder.ActionbarBuilder;
 import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -48,11 +51,18 @@ public class NewMessageMainActivity extends Activity {
         View mainView = getLayoutInflater().inflate(R.layout.activity_new_message_main, mainLayout, false);
         mainLayout.addView(mainView);
         
-        TextView tv = (TextView) findViewById(R.id.main_headline);
-        tv.setText("New Message");
         
-        MainTabBuilder tb = new MainTabBuilder(this);
-        tb.initTabs();	
+        RelativeLayout actionbar = (RelativeLayout) findViewById(R.id.actionbar);
+        actionbar.setBackgroundColor(Color.parseColor("#181818"));
+        
+        LinearLayout splitline = (LinearLayout) findViewById(R.id.actionbar_splitline);
+        splitline.setBackgroundColor(Color.parseColor("#5D5D5D"));
+        
+        TextView headline = (TextView) findViewById(R.id.main_headline);
+        headline.setText("New Message");
+        
+        ActionbarBuilder ab = new ActionbarBuilder(this);
+        ab.initTabs();
     }
     
     

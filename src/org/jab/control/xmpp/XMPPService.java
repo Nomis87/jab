@@ -5,9 +5,7 @@ import java.util.List;
 import org.jab.control.message.SendMessageActivity;
 import org.jab.control.storage.database.DbOfflineMessagesRepository;
 import org.jab.control.storage.database.DbUserRepository;
-import org.jab.control.util.ConnectionState;
 import org.jab.model.User;
-import org.jab.model.message.IncomingMessage;
 import org.jab.model.message.OutgoingMessage;
 import org.jivesoftware.smack.XMPPException;
 
@@ -18,11 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
 /**
@@ -70,10 +64,9 @@ public class XMPPService extends Service {
 		
 		//Alle Message Receiver registrieren
 		handler.setMessageReceiver();
-		connectWithThread();
 		
-//		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15000, mPAlarmIntent);
+		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 600000, mPAlarmIntent);
 		
 	}
 	
@@ -84,8 +77,8 @@ public class XMPPService extends Service {
 		// Wenn Service beendet wird, wird auch der Thread beendet!!!
 		Log.d(TAG, "Sevice wird destroyed");
 		
-//		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//		am.cancel(mPAlarmIntent);
+		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		am.cancel(mPAlarmIntent);
 		unregisterReceiver(mAlarmReceiver);
 		handler.disconect();
 		handler.removeMessageReceiver();
@@ -104,7 +97,7 @@ public class XMPPService extends Service {
 			
 			for(OutgoingMessage oMessage : messageList){
 				
-				if(ConnectionState.getInstance().isConnectionState()){
+				if(XMPPService.XMPPServiceStatus){
 					
 					Intent intent = new Intent(this, SendMessageActivity.class);
 					intent.putExtra("receiver", oMessage.getReceiver());

@@ -7,10 +7,12 @@ import org.jab.control.storage.database.DbTimedMessagesRepository;
 import org.jab.main.R;
 import org.jab.model.message.TimedOutgoingMessage;
 import org.jab.view.list.TimedMessageAdapter;
+import org.jab.view.tabBuilder.ActionbarBuilder;
 import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -46,17 +48,17 @@ public class TimedMessageOverviewActivity extends Activity {
         View view = getLayoutInflater().inflate(R.layout.activity_timed_message_overview, mainLayout, false);
         mainLayout.addView(view);
         
-        TextView tv = (TextView) findViewById(R.id.main_headline);
-        tv.setText("Übersicht");
+        RelativeLayout actionbar = (RelativeLayout) findViewById(R.id.actionbar);
+        actionbar.setBackgroundColor(Color.parseColor("#E44A00"));
         
-        LinearLayout lyLeft = (LinearLayout) findViewById(R.id.left_yellow_bar_button_layout);
-        lyLeft.setBackgroundResource(R.drawable.tabgroup_yellow_bar_repeat_activated);
+        LinearLayout splitline = (LinearLayout) findViewById(R.id.actionbar_splitline);
+        splitline.setBackgroundColor(Color.parseColor("#FF8800"));
         
-        LinearLayout lyRight = (LinearLayout) findViewById(R.id.right_yellow_bar_button_layout);
-        lyRight.setBackgroundResource(R.drawable.tabgroup_yellow_bar_repeat_activated);
+        TextView headline = (TextView) findViewById(R.id.main_headline);
+        headline.setText("Timed Messages");
         
-        MainTabBuilder tb = new MainTabBuilder(this);
-        tb.initTabs();	
+        ActionbarBuilder ab = new ActionbarBuilder(this);
+        ab.initTabs();
     }
  
  

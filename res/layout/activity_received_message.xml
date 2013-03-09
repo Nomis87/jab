@@ -68,13 +68,25 @@
          android:background="#aaFFFFFF">
          
          <Button
+             android:id="@+id/activity_received_message_close_button"
              android:layout_width="80dp"
              android:layout_height="30dp"
              android:text="Close"
              android:background="#181818"
              android:textColor="#FFFFFF"
-             android:id="@+id/activity_received_message_close_button"
-             android:layout_centerInParent="true"/>
+             android:layout_centerVertical="true"
+             android:layout_marginLeft="25dp"/>
+         
+         <Button
+             android:id="@+id/activity_received_message_rejab_button"
+             android:layout_width="80dp"
+             android:layout_height="30dp"
+             android:text="re Jab"
+             android:background="#181818"
+             android:textColor="#FFFFFF"
+             android:layout_centerVertical="true"
+             android:layout_marginRight="25dp"
+             android:layout_alignParentRight="true"/>
          
      </RelativeLayout>
 

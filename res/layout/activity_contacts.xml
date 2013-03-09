@@ -68,7 +68,7 @@
     	<ListView 
     	    android:id="@+id/activity_contacts_person_list"
     	    android:layout_width="fill_parent"
-       		android:layout_height="fill_parent"
+       		android:layout_height="wrap_content"
        		android:paddingTop="10dp" >
     	    
     	</ListView>

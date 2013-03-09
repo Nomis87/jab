@@ -1,10 +1,12 @@
 package org.jab.view.activity;
 
 import org.jab.main.R;
+import org.jab.view.tabBuilder.ActionbarBuilder;
 import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -36,16 +38,17 @@ public class HistoryActivity extends Activity {
         View view = getLayoutInflater().inflate(R.layout.activity_history, mainLayout, false);
         mainLayout.addView(view);
         
-        TextView tv = (TextView) findViewById(R.id.main_headline);
-        tv.setText("History");
         
-        LinearLayout lyLeft = (LinearLayout) findViewById(R.id.left_blue_bar_button_layout);
-        lyLeft.setBackgroundResource(R.drawable.tabgroup_blue_bar_repeat_activated);
+        RelativeLayout actionbar = (RelativeLayout) findViewById(R.id.actionbar);
+        actionbar.setBackgroundColor(Color.parseColor("#1067A5"));
         
-        LinearLayout lyRight = (LinearLayout) findViewById(R.id.right_blue_bar_button_layout);
-        lyRight.setBackgroundResource(R.drawable.tabgroup_blue_bar_repeat_activated);
+        LinearLayout splitline = (LinearLayout) findViewById(R.id.actionbar_splitline);
+        splitline.setBackgroundColor(Color.parseColor("#0099CC"));
         
-        MainTabBuilder tb = new MainTabBuilder(this);
-        tb.initTabs();	
+        TextView headline = (TextView) findViewById(R.id.main_headline);
+        headline.setText("Messages");
+        
+        ActionbarBuilder ab = new ActionbarBuilder(this);
+        ab.initTabs();
     }
 }

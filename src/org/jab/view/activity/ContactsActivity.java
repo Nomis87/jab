@@ -7,11 +7,13 @@ import org.jab.control.storage.database.DbRosterRepository;
 import org.jab.main.R;
 import org.jab.model.contact.RosterContact;
 import org.jab.view.list.PersonListAdapter;
+import org.jab.view.tabBuilder.ActionbarBuilder;
 import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -42,7 +44,7 @@ public class ContactsActivity extends Activity {
         this.context = this;
         _initLayout();
         _initPersonListView();
-       
+        _initGroupListView();
     }
 
     @Override
@@ -63,17 +65,17 @@ public class ContactsActivity extends Activity {
         mainLayout.addView(view);
         
         
-        TextView tv = (TextView) findViewById(R.id.main_headline);
-        tv.setText("Contacts");
+        RelativeLayout actionbar = (RelativeLayout) findViewById(R.id.actionbar);
+        actionbar.setBackgroundColor(Color.parseColor("#AA0B0B"));
         
-        LinearLayout lyLeft = (LinearLayout) findViewById(R.id.left_red_bar_button_layout);
-        lyLeft.setBackgroundResource(R.drawable.tabgroup_red_bar_repeat_activated);
+        LinearLayout splitline = (LinearLayout) findViewById(R.id.actionbar_splitline);
+        splitline.setBackgroundColor(Color.parseColor("#CC0000"));
         
-        LinearLayout lyRight = (LinearLayout) findViewById(R.id.right_red_bar_button_layout);
-        lyRight.setBackgroundResource(R.drawable.tabgroup_red_bar_repeat_activated);
+        TextView headline = (TextView) findViewById(R.id.main_headline);
+        headline.setText("Contacts");
         
-        MainTabBuilder tb = new MainTabBuilder(this);
-        tb.initTabs();
+        ActionbarBuilder ab = new ActionbarBuilder(this);
+        ab.initTabs();
     }
     
     /**
@@ -97,6 +99,8 @@ public class ContactsActivity extends Activity {
 			
 			public void onClick(View v) {
 				
+				Intent intent = new Intent(context, CreateGroupActivity.class);
+				startActivity(intent);
 				
 			}
 		});
@@ -136,7 +140,7 @@ public class ContactsActivity extends Activity {
 				
 				RosterContact rc = (RosterContact) parent.getAdapter().getItem(position);
 				
-				Intent intent = new Intent(context, NewMessageMainActivity.class);
+				Intent intent = new Intent(context, NewInstantMessageActivity.class);
 				intent.putExtra("userId", rc.getJid());
 				
 				context.startActivity(intent);

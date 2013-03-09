@@ -2,7 +2,6 @@ package org.jab.control.main;
 
 import org.jab.control.contact.ContactObserver;
 import org.jab.control.util.ApplicationContext;
-import org.jab.control.util.ConnectionState;
 import org.jab.control.xmpp.XMPPService;
 
 import android.app.Service;
@@ -31,7 +30,6 @@ public class MainService extends Service{
 	private final String TAG = "MainService";
 
 	private Intent xmppService;
-	private ConnectionState connectionState;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -48,7 +46,6 @@ public class MainService extends Service{
 		ApplicationContext.getInstance().setContext(getApplicationContext());
 		
 		xmppService = new Intent(this, XMPPService.class);
-		connectionState = ConnectionState.getInstance();
 		//Register ContactObserver
 		//afr.setAsync();	
 		ContactObserver co = new ContactObserver(new Handler(), getBaseContext());
@@ -101,7 +98,6 @@ public class MainService extends Service{
 					Log.d(TAG, "XmppService wird gestartet");
 					//Startet wenn eine Verbindung besteht
 					startService(xmppService);
-					connectionState.setConnectionState(true);
 				}
 			}
 		};

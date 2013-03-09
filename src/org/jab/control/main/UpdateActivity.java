@@ -1,4 +1,4 @@
-package org.jab.view.activity;
+package org.jab.control.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.jab.main.R.menu;
 import org.jab.model.User;
 import org.jab.model.contact.HandyContact;
 import org.jab.model.contact.RosterContact;
+import org.jab.view.activity.IndexActivity;
 import org.jivesoftware.smack.RosterStorage;
 import org.jivesoftware.smack.XMPPException;
 
@@ -243,11 +244,20 @@ public class UpdateActivity extends Activity {
 	     				
 	     		}
 	     		phoneCursor.close();
-	        	
-	        	check = true;   	
+	        	  	
 	        }
-			
+	        
 	        cursor.close();
+	        
+	        if(!handyContacts.isEmpty()){
+	        	for(HandyContact hc : handyContacts){
+     			
+	        		if(handler.isRegistered(hc.getCountryCode(), hc.getNumber())){
+     				
+	        			check = true; 
+	        		}
+	        	}  
+	        }
 	        
 			return check;
 		}

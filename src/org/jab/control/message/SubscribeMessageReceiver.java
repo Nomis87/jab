@@ -29,23 +29,39 @@ public class SubscribeMessageReceiver extends BroadcastReceiver{
 		this.context = context;
 		
 		String sender = intent.getStringExtra("subscribeSender");
-		DbPhoneBookRepository contactRepository = new DbPhoneBookRepository(context);
 		
-		List<HandyContact> handyContactList = contactRepository.getAllContacts();
-		for(HandyContact hc : handyContactList){
+		boolean inRoster = false;
+		DbRosterRepository rosterRepo = new DbRosterRepository(context);
+		List<RosterContact> rosterList = rosterRepo.getAllRosterEntrys();
+		
+		for(RosterContact rc : rosterList){
 			
-			if(sender.contains(HelperFunctions.getInstance().cleanNumber(hc.getNumber()))){
+			if(rc.getJid().equals(sender) || sender.contains(rc.getJid())){
 				
-				addToRoster(sender, hc.getName());
-				showNotification(hc);		
-				break;
+				inRoster = true;
 			}
-			else{
-				
-				Log.d(TAG, sender+" nicht in der Kontaktliste.");
-			}
+			
 		}
 		
+		if(!inRoster){
+			
+			DbPhoneBookRepository contactRepository = new DbPhoneBookRepository(context);
+			List<HandyContact> handyContactList = contactRepository.getAllContacts();		
+		
+			for(HandyContact hc : handyContactList){
+				
+				if(sender.contains(HelperFunctions.getInstance().cleanNumber(hc.getNumber()))){
+					
+					addToRoster(sender, hc.getName());
+					showNotification(hc);		
+					break;
+				}
+				else{
+					
+					Log.d(TAG, sender+" nicht in der Kontaktliste.");
+				}
+			}
+		}
 	}
 	
 	/**

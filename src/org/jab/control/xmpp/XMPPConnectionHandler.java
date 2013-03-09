@@ -7,7 +7,6 @@ import org.jab.control.message.MessageListener;
 import org.jab.control.message.SubscribeMessageListener;
 import org.jab.control.storage.database.DbOfflineMessagesRepository;
 import org.jab.control.util.ApplicationConstants;
-import org.jab.control.util.ConnectionState;
 import org.jab.control.util.HelperFunctions;
 import org.jab.control.xmpp.ping.PingFilter;
 import org.jab.control.xmpp.ping.PingListener;
@@ -15,17 +14,13 @@ import org.jab.model.message.OutgoingMessage;
 import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
-import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.SASLAuthentication;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.filter.PacketTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -272,7 +267,7 @@ public class XMPPConnectionHandler {
 			
 			for(OutgoingMessage oMessage : messageList){
 				
-				if(ConnectionState.getInstance().isConnectionState()){
+				if(XMPPService.XMPPServiceStatus){
 					
 					sendJabMessage(oMessage.getReceiver(), oMessage.getSound(), oMessage.getMessage(), context);
 					offRepo.deleteMessage(oMessage);
@@ -299,7 +294,7 @@ public class XMPPConnectionHandler {
 	 */
 	public boolean sendJabMessage(String receiver, String sound, String pokeMessage, Context context){
 		
-		if(ConnectionState.getInstance().isConnectionState()){
+		if(XMPPService.XMPPServiceStatus){
 			 Log.i("XMPPClient", "Sending text [so_" + sound + " "+pokeMessage+"] to [" + receiver + "]");
 			 if(connection.isAuthenticated()){
 				 

@@ -5,7 +5,6 @@ import org.jab.control.storage.preference.ApplicationPreference;
 import org.jab.control.util.ApplicationContext;
 import org.jab.view.activity.IndexActivity;
 import org.jab.view.activity.SetupAccountActivity;
-import org.jab.view.activity.UpdateActivity;
 
 import android.app.Activity;
 import android.content.Intent;

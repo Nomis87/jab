@@ -29,7 +29,7 @@ public class IndexActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_index);
         
         this.context = this;
         
@@ -47,12 +47,6 @@ public class IndexActivity extends Activity {
     	
         getWindow().setWindowAnimations(0);    
         
-        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
-        View view = getLayoutInflater().inflate(R.layout.activity_index, mainLayout, false);
-        mainLayout.addView(view);
-        
-        TextView tv = (TextView) findViewById(R.id.main_headline);
-        tv.setText("Home");
         
         MainTabBuilder tb = new MainTabBuilder(this);
         tb.initTabs();	

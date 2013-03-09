@@ -10,6 +10,8 @@ import org.jab.model.message.IncomingMessage;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -27,14 +29,18 @@ import android.widget.TextView;
  */
 public class ReceivedMessageActivity extends Activity {
 	
+	private Context context;
 	private TextView fromView;
 	private Button playSoundButton;
 	private TextView messageView;
 	private Button close;
+	private Button reJab;
 	
 	private SoundPool sp;
 	private Integer soundId;
 	private float volume;
+	
+	private RosterContact rc;
 	
 	
 	@Override
@@ -43,7 +49,7 @@ public class ReceivedMessageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_received_message);
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-		
+		this.context = this;
 		
 		Bundle extras = getIntent().getExtras();
 		String pokeSender = extras.getString("pokeSender");
@@ -59,6 +65,7 @@ public class ReceivedMessageActivity extends Activity {
 			if(pokeSender.contains(rc.getJid())){
 				
 				pokeSender = rc.getUsername();
+				this.rc = rc;
 			}
 		}
 		
@@ -68,6 +75,8 @@ public class ReceivedMessageActivity extends Activity {
 		playSoundButtonListener(pokeSound);
 		this.messageView = (TextView) findViewById(R.id.activity_received_message_message_view);
 		this.messageView.setText(pokeMessage);
+		this.reJab = (Button) findViewById(R.id.activity_received_message_rejab_button);
+		rejabButtonListener();
 		this.close = (Button) findViewById(R.id.activity_received_message_close_button);
 		closeButtonListener();
 		
@@ -149,6 +158,21 @@ public class ReceivedMessageActivity extends Activity {
 			
 			
 		}
+	}
+	
+	private void rejabButtonListener(){
+		
+		this.reJab.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(context, NewInstantMessageActivity.class);
+				intent.putExtra("userId", rc.getJid());
+				
+				context.startActivity(intent);
+				closeActivity();
+			}
+		});
 	}
 	
 	private void closeButtonListener(){
