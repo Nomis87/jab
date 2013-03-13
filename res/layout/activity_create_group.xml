@@ -3,6 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 	
+    <Button 
+        android:id="@+id/activity_create_group_createButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:text="Erstellen"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/new_message_button_bg"/>
+    
+    
+    <RelativeLayout 
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="60dp">
     
     <TextView 
         android:layout_width="wrap_content"
@@ -13,15 +30,15 @@
         android:textColor="#181818"
         android:text="Gebe deiner Gruppe einen Namen"/>
     
-    <TextView 
+    <TextView
+        android:id="@+id/activity_create_group_nameCounter" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginRight="15dp"
         android:textSize="12dp"
         android:layout_alignParentRight="true"
-        android:textColor="#181818"
-        android:text="1/12"/>
+        android:textColor="#181818"/>
     
    <EditText
        android:id="@+id/activity_create_group_name" 
@@ -30,6 +47,7 @@
        android:layout_marginTop="50dp"
        android:layout_marginLeft="15dp"
        android:layout_marginRight="15dp"
+       android:maxLength="20"
        android:hint="Gruppenname"
        android:background="@drawable/input_field_bg"/>
    
@@ -59,14 +77,35 @@
        
    </RelativeLayout>
    
-   <ListView
-       android:id="@+id/activity_create_group_meberListView" 
-       android:layout_width="match_parent"
+   
+   <TextView
+       android:id="@+id/activity_create_group_groupMemberCount"
+       android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_marginTop="170dp"
+       android:layout_marginTop="165dp"
        android:layout_marginLeft="15dp"
-       android:layout_marginRight="15dp">
+       android:textSize="14dp"
+       android:textColor="#181818"
+       android:text="Anzahl: 0"/>
+    
+   <LinearLayout 
+       android:layout_height="2dp"
+       android:layout_width="match_parent"
+       android:layout_marginTop="186dp"
+       android:layout_marginLeft="15dp"
+       android:layout_marginRight="15dp"
+       android:background="#5D5D5D"/>
+   
+   <ListView
+      android:id="@+id/activity_create_group_meberListView" 
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="190dp"
+      android:layout_marginLeft="15dp"
+      android:layout_marginRight="15dp">
        
    </ListView>
+   
+   </RelativeLayout>
     
 </RelativeLayout>

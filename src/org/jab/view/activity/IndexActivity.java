@@ -1,11 +1,15 @@
 package org.jab.view.activity;
 
+import org.jab.control.xmpp.XMPPConnectionHandler;
+import org.jab.control.xmpp.XMPPService;
 import org.jab.main.R;
 import org.jab.view.tabBuilder.MainTabBuilder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.SlidingDrawer;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -32,6 +37,7 @@ public class IndexActivity extends Activity {
         setContentView(R.layout.activity_index);
         
         this.context = this;
+
         
         _initLayout();
         _initVolumeFader();
@@ -83,7 +89,6 @@ public class IndexActivity extends Activity {
     }
     
 
-    
  
 
 

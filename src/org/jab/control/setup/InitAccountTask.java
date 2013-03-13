@@ -159,24 +159,27 @@ public class InitAccountTask extends AsyncTask<String, Integer, Boolean> {
 				contactsRepository.saveContact(handyContact);
 				
 				Log.d(TAG, handyContact.getName());
-				System.out.println(connectionHandler.isRegistered(countryCode,handyContact.getNumber()));
+//				System.out.println(connectionHandler.isRegistered(countryCode,handyContact.getNumber()));
+
 				if(connectionHandler.isRegistered(countryCode,handyContact.getNumber())){
 					
 					//Subscribe Message to user
 					String userJid = handyContact.getCountryCode()+"_"+handyContact.getNumber()+"@"+connectionHandler.getConnection().getServiceName();
 					connectionHandler.sendSubscribeMessage(userJid);
 					
-					//Eintrag in den Roster einfügen
-					rs.addEntry(handyContact.getCountryCode(), handyContact.getNumber(), handyContact.getName(),connectionHandler.getConnection());
-					
-					Log.d(TAG, userJid);
-					
 					RosterContact rc = new RosterContact();
 					rc.setJid(handyContact.getCountryCode(), handyContact.getNumber());
 					rc.setUsername(handyContact.getName());
-					
+					Log.d(TAG, rc.getUsername()+"wird hinzugefügt");
 					//Roster auf Datenbank abbilden
 					checked = rosterRepository.createRosterEntry(rc);
+					//Eintrag in den Roster einfügen
+					rs.addEntry(handyContact.getCountryCode(), handyContact.getNumber(), handyContact.getName(),connectionHandler.getConnection());
+					
+					
+					Log.d(TAG, userJid);
+					
+					
 					
 					contactCounter++;
 				}

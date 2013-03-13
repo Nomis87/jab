@@ -1,10 +1,14 @@
 package org.jab.view.activity;
 
+import java.util.Date;
+
+import org.jab.control.storage.database.DbIOMessagesRepository;
 import org.jab.control.storage.database.DbRosterRepository;
 import org.jab.control.xmpp.XMPPConnectionHandler;
 import org.jab.control.xmpp.XMPPRosterStorage;
 import org.jab.main.R;
 import org.jab.model.contact.RosterContact;
+import org.jab.model.message.AbstractMessage;
 import org.jab.model.message.IncomingMessage;
 
 import android.annotation.SuppressLint;
@@ -51,10 +55,14 @@ public class ReceivedMessageActivity extends Activity {
 		overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 		this.context = this;
 		
+		Date date = new Date();
+		
+		
 		Bundle extras = getIntent().getExtras();
 		String pokeSender = extras.getString("pokeSender");
 		String pokeSound = extras.getString("pokeSound");
 		String pokeMessage = extras.getString("pokeMessage");
+		
 		
 		playSound(pokeSound);
 		
@@ -68,6 +76,11 @@ public class ReceivedMessageActivity extends Activity {
 				this.rc = rc;
 			}
 		}
+		
+		DbIOMessagesRepository messageRepo = new DbIOMessagesRepository(context);
+		AbstractMessage iMessage = new IncomingMessage(pokeSender, pokeSound, pokeMessage);
+		iMessage.setTime(date.getTime());
+		messageRepo.createMessage(iMessage);
 		
 		this.fromView = (TextView) findViewById(R.id.activity_received_message_from_view);
 		this.fromView.setText(pokeSender);

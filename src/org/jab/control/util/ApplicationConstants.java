@@ -24,7 +24,7 @@ public class ApplicationConstants {
 	public static final String DB_TABLE_CONTACTS = SERVER_NAME+"_handyContacts";
 	public static final String DB_TABLE_OFFLINE_MESSAGES = SERVER_NAME+"_outgoingMessages";
 	public static final String DB_TABLE_TIMED_MESSAGES = SERVER_NAME+"_timedMessages";
-	public static final String DB_TABLE_SENDED_MESSAGES = SERVER_NAME+"_sendedMessages";
+	public static final String DB_TABLE_IO_MESSAGES = SERVER_NAME+"_ioMessages";
 	public static final String DB_TABLE_SOUND_PACKAGES = SERVER_NAME+"_soundPackages";
 	public static final String DB_TABLE_SOUNDS = SERVER_NAME+"_sounds";
 	public static final int DB_VERSION = 1;

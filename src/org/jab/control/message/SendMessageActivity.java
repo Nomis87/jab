@@ -1,8 +1,8 @@
 package org.jab.control.message;
 
-import java.util.concurrent.ExecutionException;
-
+import org.jab.control.storage.database.DbIOMessagesRepository;
 import org.jab.control.xmpp.XMPPConnectionHandler;
+import org.jab.model.message.OutgoingMessage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -51,7 +51,7 @@ public class SendMessageActivity extends Activity {
 		
 		@Override
 		protected Boolean doInBackground(String... params) {
-				
+			
 			handler.sendJabMessage(receiver, sound, message, context);
 			
 			

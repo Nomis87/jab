@@ -2,20 +2,26 @@ package org.jab.control.xmpp;
 
 import java.util.List;
 
+import org.jab.control.main.MainService;
+import org.jab.control.main.MainService.LocalBinder;
 import org.jab.control.message.SendMessageActivity;
 import org.jab.control.storage.database.DbOfflineMessagesRepository;
 import org.jab.control.storage.database.DbUserRepository;
 import org.jab.model.User;
 import org.jab.model.message.OutgoingMessage;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPException;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.net.ConnectivityManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -30,6 +36,7 @@ public class XMPPService extends Service {
 	private final String TAG = "XMPPService";
 	
 	public static boolean XMPPServiceStatus = false;
+	private Integer reconnectCounter = 0;
 	
 	private static final String RECONNECT_ALARM = "org.yaxim.androidclient.RECONNECT_ALARM";
 	private Intent mAlarmIntent = new Intent(RECONNECT_ALARM);
@@ -37,6 +44,12 @@ public class XMPPService extends Service {
 	private BroadcastReceiver mAlarmReceiver = new ReconnectAlarmReceiver();
 	private XMPPConnectionHandler handler;
 	private User user;
+	
+	boolean bounded = false;
+	private ServiceConnection sConnection;
+	private MainService mainService;
+	
+	private ConnectionListener connectionListener;
 	
 	
 	@Override
@@ -60,14 +73,48 @@ public class XMPPService extends Service {
 		mPAlarmIntent = PendingIntent.getBroadcast(this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		registerReceiver(mAlarmReceiver, new IntentFilter(RECONNECT_ALARM));
 		
+		
+		
+	}
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		
 		Log.d(TAG, "Service Wird aufgerufen!!!!");
 		
+		Intent bindIntent = new Intent(this, MainService.class);
+		sConnection = new ServiceConnection() {
+			
+			public void onServiceDisconnected(ComponentName name) {
+				
+				mainService = null;
+				bounded = false;
+			}
+			
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				
+				LocalBinder mLocalBinder = (LocalBinder)service;
+				mainService = mLocalBinder.getServerInstance();
+				bounded = true;
+			}
+		};
+		
+		bindService(bindIntent, sConnection, BIND_AUTO_CREATE);
+		
+		if(bounded){
+			
+			this.connectionListener = mainService.new XMPPConnectionListener();
+		}
+			
 		//Alle Message Receiver registrieren
 		handler.setMessageReceiver();
 		
 		AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 600000, mPAlarmIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 30000, mPAlarmIntent);
 		
+		
+		
+		return super.onStartCommand(intent, flags, startId);
 	}
 	
 	
@@ -82,6 +129,9 @@ public class XMPPService extends Service {
 		unregisterReceiver(mAlarmReceiver);
 		handler.disconect();
 		handler.removeMessageReceiver();
+		handler.reoveConnectionListener(connectionListener);
+		
+		unbindService(sConnection);
 		
 		XMPPServiceStatus = false;;
 		super.onDestroy();
@@ -122,9 +172,11 @@ public class XMPPService extends Service {
 		
 		public void onReceive(Context ctx, Intent i) {
 			
+			
 			Log.d(TAG, TAG+" wird aufgerufen");
 			Log.d(TAG, "isCOnnected: "+handler.getConnection().isConnected());
-			Log.d(TAG, TAG+" "+handler.getConnection().isAuthenticated());
+			Log.d(TAG, "isAUthentikaded: "+handler.getConnection().isAuthenticated());
+			Log.d(TAG, "ConnectionId: "+handler.getConnection().getConnectionID());
 			if (handler.getConnection().isAuthenticated()) {
 				return;
 			}
@@ -148,10 +200,20 @@ public class XMPPService extends Service {
 				if(!handler.getConnection().isAuthenticated()){
 					
 					try {
-						Log.d(TAG, "Neu Einloggen");
-						handler.getConnection().connect();
-						handler.login(user.getUserId(), user.getPassword());
-						handleOfflineMessages();
+						
+							if(reconnectCounter <=2){
+								Log.d(TAG, "Neu Einloggen");
+								handler.getConnection().connect();
+								handler.setConnectionListener(connectionListener);
+								handler.login(user.getUserId(), user.getPassword());
+								handleOfflineMessages();
+								reconnectCounter++;
+							}
+							else{
+								
+								Intent intent = new Intent(MainService.RECONNECT_INTENT);
+								sendBroadcast(intent);
+							}
 
 					} catch (XMPPException e) {
 						// TODO Auto-generated catch block

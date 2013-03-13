@@ -2,63 +2,71 @@ package org.jab.view.list;
 
 import java.util.List;
 
+import org.jab.control.xmpp.XMPPConnectionHandler;
+import org.jab.main.R;
 import org.jab.model.contact.RosterContact;
 
-import android.R.color;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PersonListAdapter extends ArrayAdapter<RosterContact>{
 
 
-	private int resource;
-	private LayoutInflater inflater;
-	Context context;
 	
+	public PersonListAdapter(Context context, List<RosterContact> objects) {
+		super(context, 0, objects);
+		
 	
-	public PersonListAdapter(Context context, int textViewResourceId,
-			List<RosterContact> objects) {
-		super(context, textViewResourceId, objects);
-		
-		this.context = context;
-		this.resource = textViewResourceId;
-		inflater = LayoutInflater.from(context);
-		
 	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		RosterContact rc = getItem(position);
-		PersonListViewCache viewCache;
+		View returnView = convertView;
 		
-		if ( convertView == null ) {
-            convertView = ( RelativeLayout ) inflater.inflate( resource, null );
-            viewCache = new PersonListViewCache( convertView );
-            convertView.setTag( viewCache );
-		}
-		else {
-            convertView = ( RelativeLayout ) convertView;
-            viewCache = ( PersonListViewCache ) convertView.getTag();
-		}
-		
-		if(position%2==0){
+		if(returnView == null){
 			
-			viewCache.getBackLayout(resource).setBackgroundColor(Color.parseColor("#66181818"));
+			returnView = LayoutInflater.from(getContext()).inflate(
+					R.layout.list_contact_person_row_item, null);
+			
+			 returnView.setTag(new ViewHolder(returnView));
 		}
 		
-		TextView personName = viewCache.getName(resource);
-		personName.setText(rc.getUsername());
+		ViewHolder holder = (ViewHolder) returnView.getTag();
+		
+		RosterContact rc = getItem(position);
+		
+		if(XMPPConnectionHandler.getInstance().isUserOnline(rc.getJid())){
+			
+			holder.personImage.setImageResource(R.drawable.person_online);
+		}
+		else{
+			
+			holder.personImage.setImageResource(R.drawable.person_offline);
+		}
+		
+		holder.personName.setText(rc.getUsername());
 		
 		
-		return convertView;
+		return returnView;
+	}
+	
+	private class ViewHolder{
+		
+		ImageView personImage;
+		TextView personName;
+		
+		public ViewHolder(View baseView) {
+			
+			this.personImage = (ImageView) baseView.findViewById(R.id.contact_person_image);
+			this.personName = (TextView) baseView.findViewById(R.id.contact_person_name_view);
+		}
+		
 	}
 
 }

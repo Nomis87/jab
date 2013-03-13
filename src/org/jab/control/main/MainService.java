@@ -1,16 +1,24 @@
 package org.jab.control.main;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.protocol.HttpContext;
 import org.jab.control.contact.ContactObserver;
 import org.jab.control.util.ApplicationContext;
 import org.jab.control.xmpp.XMPPService;
+import org.jivesoftware.smack.ConnectionListener;
 
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.ContactsContract;
@@ -28,14 +36,26 @@ public class MainService extends Service{
 	
 
 	private final String TAG = "MainService";
+	public static final String RECONNECT_INTENT = "org.jab.control.main.MainService.RECONNECT_INTENT";
 
 	private Intent xmppService;
-	
-	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	private int threadTime;
+	private boolean firstRun = true;
+
+	 IBinder mBinder = new LocalBinder();
+
+	 @Override
+	 public IBinder onBind(Intent intent) {
+	  return mBinder;
+	 }
+
+	 public class LocalBinder extends Binder {
+		 
+		 public MainService getServerInstance() {
+			 
+			 return MainService.this;
+		 }
+	 }
 	
 	
 	@Override
@@ -45,6 +65,7 @@ public class MainService extends Service{
 		 
 		ApplicationContext.getInstance().setContext(getApplicationContext());
 		
+		Log.d(TAG, "Service wird gestartet");
 		xmppService = new Intent(this, XMPPService.class);
 		//Register ContactObserver
 		//afr.setAsync();	
@@ -58,6 +79,7 @@ public class MainService extends Service{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		
+		startXmppService(1);
 		//TODO Umstellen von Mobile auf WLan funktioniert noch nicht eventuell an
 		//https://github.com/pfleidi/yaxim/blob/master/src/org/yaxim/androidclient/service/YaximBroadcastReceiver.java
 		//orientieren.
@@ -68,25 +90,47 @@ public class MainService extends Service{
 			public void onReceive(Context context, Intent intent) {
 				
 				
-				stopXmppService();
-				startXmppService();
+				if(!firstRun){
+					
+					stopXmppService();
+					startXmppService(5);
+				}
+				
 
 				
 			}
 		};	
 		registerReceiver(internetReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 		
+		BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				
+				
+				stopXmppService();
+				startXmppService(5);
+				
+			}
+		};
+		registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+		
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
-	private void startXmppService(){
+
+
+	
+	private void startXmppService(int time){
+		
+		threadTime = time * 1000;
 		
 		Runnable t = new Runnable() {
 			
 			public void run() {
 				
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(threadTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -98,6 +142,7 @@ public class MainService extends Service{
 					Log.d(TAG, "XmppService wird gestartet");
 					//Startet wenn eine Verbindung besteht
 					startService(xmppService);
+					firstRun = false;
 				}
 			}
 		};
@@ -130,4 +175,39 @@ public class MainService extends Service{
 		 
 		 return false;
 	 }
+	
+	public class XMPPConnectionListener implements ConnectionListener {
+
+		public void connectionClosed() {
+			
+			XMPPService.XMPPServiceStatus = false;
+			reconnectingIn(1);
+			Log.d(TAG, "Connection CLosed");
+		}
+
+		public void connectionClosedOnError(Exception arg0) {
+			
+			reconnectingIn(5);
+			Log.d(TAG, "Connection CLosed on Error");
+		}
+
+		public void reconnectingIn(int time) {
+			
+			stopXmppService();
+			startXmppService(time);
+			Log.d(TAG, "Reconnect in "+time+" s");
+		}
+
+		public void reconnectionFailed(Exception arg0) {
+			
+			reconnectingIn(5000);
+			Log.d(TAG, "Reconnect in failed");
+		}
+
+		public void reconnectionSuccessful() {
+			
+	
+		}
+	}
+
 }

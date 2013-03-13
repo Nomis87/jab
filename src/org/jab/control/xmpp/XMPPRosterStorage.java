@@ -266,6 +266,9 @@ public class XMPPRosterStorage {
 				}
 			}
 		}
+		else{
+			Log.d(TAG, "COnnection wrong");
+		}
 		
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jab.control.message.MessageListener;
 import org.jab.control.message.SubscribeMessageListener;
+import org.jab.control.storage.database.DbIOMessagesRepository;
 import org.jab.control.storage.database.DbOfflineMessagesRepository;
 import org.jab.control.util.ApplicationConstants;
 import org.jab.control.util.HelperFunctions;
@@ -15,13 +16,16 @@ import org.jivesoftware.smack.AccountManager;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.Form;
@@ -63,7 +67,7 @@ import android.util.Log;
  * @author Tobias
  *
  */
-public class XMPPConnectionHandler {
+public class XMPPConnectionHandler{
 		
 	private final String TAG = "XMPPConnectionHandler";
 	private static XMPPConnectionHandler instance = null;
@@ -107,6 +111,7 @@ public class XMPPConnectionHandler {
 	private void init_config(){
 		
 		this.config =  new ConnectionConfiguration(ApplicationConstants.SERVER_HOST, ApplicationConstants.SERVER_PORT);
+		this.config.setReconnectionAllowed(true);
 		this.config.setTruststorePath("/system/etc/security/cacerts.bks");
 		this.config.setTruststorePassword("changeit");
 		this.config.setTruststoreType("bks");
@@ -133,7 +138,16 @@ public class XMPPConnectionHandler {
 		this.pingFilter = new PingFilter();
 		this.pingListener = new PingListener();
 	}
-
+	
+	public void setConnectionListener(ConnectionListener cl){
+		
+		this.connection.addConnectionListener(cl);
+	}
+	
+	public void reoveConnectionListener(ConnectionListener cl){
+		
+		this.connection.removeConnectionListener(cl);
+	}
 	
 	public void setMessageReceiver(){
 		
@@ -187,6 +201,8 @@ public class XMPPConnectionHandler {
 		String userId = HelperFunctions.getInstance().generateUserId(number, countryCode);
 		
 		boolean registered = false;	
+		
+		Log.d(TAG, "userId: "+userId);
 		
 		UserSearchManager userSearch = new UserSearchManager(connection);
 		ReportedData data = null;
@@ -305,6 +321,10 @@ public class XMPPConnectionHandler {
 				 
 				 Message message = new Message(receiver, Message.Type.normal);
 				 message.setBody(sound+ApplicationConstants.SEPERATOR+pokeMessage);
+				 
+				DbIOMessagesRepository sendedRepo = new DbIOMessagesRepository(context);
+				OutgoingMessage outMessage = new OutgoingMessage(receiver, sound, pokeMessage);
+				sendedRepo.createMessage(outMessage);
 					 
 			     connection.sendPacket(message);
 				
@@ -339,6 +359,18 @@ public class XMPPConnectionHandler {
 			SASLAuthentication.supportSASLMechanism("PLAIN", 0);
 			connection.login(userId, HelperFunctions.getInstance().saltPassword(password));
 		}	
+	}
+	
+	public boolean isUserOnline(String jid){
+		
+		Roster roster = connection.getRoster();
+		Presence presence = roster.getPresence(jid);
+		if (presence.getType() == Presence.Type.available) {
+		   
+			return true;
+		}
+		
+		return false;
 	}
 		
 	
@@ -445,8 +477,7 @@ public class XMPPConnectionHandler {
 		pm.addExtensionProvider("bad-sessionid", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider.BadSessionIDError());
 		pm.addExtensionProvider("session-expired", "http://jabber.org/protocol/commands", new AdHocCommandDataProvider.SessionExpiredError());
 		
-	}
-	
+	}	
 	
 	
 }

@@ -23,8 +23,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 	private String rosterGroupHelperTable = "CREATE TABLE IF NOT EXISTS " 
 			+ ApplicationConstants.DB_TABLE_ROSTER_GROUP_HELPER
 			+ " (rgh_id INTEGER PRIMARY KEY AUTOINCREMENT, ro_id VARCHAR NOT NULL, rg_id VARCHAR NOT NULL);"
-			+ "	FOREIGN KEY (ro_id) REFERENCES "+ApplicationConstants.DB_TABLE_ROSTER+" (ro_id));"
-			+ "	FOREIGN KEY (rg_id) REFERENCES "+ApplicationConstants.DB_TABLE_ROSTER_GROUP+" (rg_id));";
+			+ "	FOREIGN KEY (ro_id) REFERENCES "+ApplicationConstants.DB_TABLE_ROSTER+" (ro_id) ON DELETE CASCADE);"
+			+ "	FOREIGN KEY (rg_id) REFERENCES "+ApplicationConstants.DB_TABLE_ROSTER_GROUP+" (rg_id) ON DELETE CASCADE);";
 	
 	private String rosterGroupTable = "CREATE TABLE IF NOT EXISTS " 
 			+ ApplicationConstants.DB_TABLE_ROSTER_GROUP
@@ -38,9 +38,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 			+ ApplicationConstants.DB_TABLE_TIMED_MESSAGES
 			+ " (tm_id INTEGER PRIMARY KEY AUTOINCREMENT, tm_receiver VARCHAR, tm_sound VARCHAR, tm_message VARCHAR, tm_timeToSend VARCHAR);";
 	
-	private String sendedMessagesTable = "CREATE TABLE IF NOT EXISTS " 
-			+ ApplicationConstants.DB_TABLE_SENDED_MESSAGES
-			+ " (sm_id INTEGER PRIMARY KEY AUTOINCREMENT, sm_receiver VARCHAR, sm_sound VARCHAR, sm_message VARCHAR, sm_sendedTime VARCHAR);";
+	private String ioMessagesTable = "CREATE TABLE IF NOT EXISTS " 
+			+ ApplicationConstants.DB_TABLE_IO_MESSAGES
+			+ " (iom_id INTEGER PRIMARY KEY AUTOINCREMENT, iom_receiver VARCHAR, iom_sender VARCHAR, iom_sound VARCHAR, iom_message VARCHAR, iom_time VARCHAR, iom_type INTEGER);";
 	
 	private String soundPackageTable = "CREATE TABLE IF NOT EXISTS " 
 			+ ApplicationConstants.DB_TABLE_SOUND_PACKAGES
@@ -66,7 +66,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 		db.execSQL(rosterGroupTable);
 		db.execSQL(offlineMessagesTable);
 		db.execSQL(timedMessagesTable);
-		db.execSQL(sendedMessagesTable);
+		db.execSQL(ioMessagesTable);
 		db.execSQL(soundPackageTable);
 		db.execSQL(soundTable);
 	}
@@ -79,7 +79,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_USER);
 		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_OFFLINE_MESSAGES);
 		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_TIMED_MESSAGES);
-		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_SENDED_MESSAGES);
+		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_IO_MESSAGES);
 		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_SOUNDS);
 		db.execSQL("DROP TABLE IF EXISTS "+ApplicationConstants.DB_TABLE_SOUND_PACKAGES);
 		

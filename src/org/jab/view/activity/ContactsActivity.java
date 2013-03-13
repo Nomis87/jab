@@ -115,17 +115,11 @@ public class ContactsActivity extends Activity {
     	DbRosterRepository rosterRepo = new DbRosterRepository(this);
     	List<RosterContact> contacts = rosterRepo.getAllRosterEntrys();
     	
-    	if(contacts == null){
     		
-    		Log.d(TAG, "Liste leer");
-    	}
+    	this.personListView = (ListView) findViewById(R.id.activity_contacts_person_list);
+        this.personListView.setAdapter(new PersonListAdapter(context, contacts));
+        personListViewOnItemClickListener();
     	
-    	else{
-    		
-    		this.personListView = (ListView) findViewById(R.id.activity_contacts_person_list);
-        	this.personListView.setAdapter(new PersonListAdapter(context, R.layout.list_contact_person_row_item, contacts));
-        	personListViewOnItemClickListener();
-    	}
     	
     }
 	

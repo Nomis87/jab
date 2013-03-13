@@ -75,6 +75,7 @@ public class TimedMessageAdapter extends ArrayAdapter<TimedOutgoingMessage> {
 	            TextView tv = (TextView)llt.getChildAt(0);
 	            int id = Integer.valueOf(tv.getText().toString());
 	            TimedOutgoingMessage message = repo.findTimedMessageById(id);
+	            repo.deleteTimedMessage(message);
 	            adapter.notifyDataSetChanged();//or
 	            
 	            TimedAlarmManager.getInstance().deleteTimer(getContext(), message);
@@ -94,7 +95,6 @@ public class TimedMessageAdapter extends ArrayAdapter<TimedOutgoingMessage> {
 	 */
 	private static class ViewHolder{
 		
-		int pos;
 		LinearLayout background;
 		TextView id;
 		TextView timeToSendView;

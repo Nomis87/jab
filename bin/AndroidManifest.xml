@@ -113,6 +113,12 @@
         </service>
 
         <!-- Hier befinden sich alle Receiver -->
+        <receiver android:name="org.jab.control.main.BootReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<category android:name="android.intent.category.HOME" />
+			</intent-filter>
+		</receiver>
         <receiver 
             android:name="org.jab.control.contact.ContactReceiver" >
             <intent-filter>

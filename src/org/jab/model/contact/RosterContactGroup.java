@@ -5,17 +5,11 @@ import java.util.List;
 
 public class RosterContactGroup {
 	
+	private String id;
 	private String groupName;
 	private List<RosterContact> groupContacts;
 	
-	public String getGroupName() {
-		return groupName;
-	}
-
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
+	
 	public RosterContactGroup(List<RosterContact> rosterContactGroup) {
 		
 		this.groupContacts = rosterContactGroup;
@@ -25,6 +19,29 @@ public class RosterContactGroup {
 		
 		this.groupContacts = new ArrayList<RosterContact>();
 	}
+	
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
 	
 	public void addRosterContact(RosterContact rc){
 		

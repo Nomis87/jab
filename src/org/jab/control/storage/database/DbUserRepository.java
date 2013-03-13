@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.util.Log;
 
 /**
  * Repository 
@@ -17,7 +16,7 @@ import android.util.Log;
  */
 public class DbUserRepository extends DbRepository{
 	
-	private final String TAG = "DbUserRepository";
+	//private final String TAG = "DbUserRepository";
 	
 	
 	public DbUserRepository(Context context) {

@@ -229,7 +229,7 @@ public class HelperFunctions {
 		try {
 			is = am.open("country_code.xml");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
     	
